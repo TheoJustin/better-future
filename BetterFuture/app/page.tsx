@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import GardenHeader from '@/components/garden/garden-header';
 import { usePlants } from '@/hooks/usePlants';
 import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
+import BetterFutureHeader from '@/components/bf/BetterFutureHeader';
 
 export default function Home() {
   const [selectedPlantId, setSelectedPlantId] = useState<bigint | null>(null);
@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <GardenHeader schedulerRunning={isRunning} />
+      <BetterFutureHeader schedulerRunning={isRunning} />
       
     </div>
   );
