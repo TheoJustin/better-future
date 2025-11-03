@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { usePlants } from '@/hooks/usePlants';
 import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
 import BetterFutureHeader from '@/components/bf/BetterFutureHeader';
+import QRCodeScanner from '@/components/bf/QR-CodeScanner';
 
 export default function Home() {
   const [selectedPlantId, setSelectedPlantId] = useState<bigint | null>(null);
@@ -17,6 +18,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <BetterFutureHeader schedulerRunning={isRunning} />
+
+      <QRCodeScanner />
       
     </div>
   );
