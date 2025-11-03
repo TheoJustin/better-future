@@ -1,43 +1,28 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import GardenHeader from "@/components/garden-header"
-import GardenGrid from "@/components/garden-grid"
-import StatsSidebar from "@/components/stats-sidebar"
-import PlantDetailsModal from "@/components/plant-details-modal"
-import PlantSeedModal from "@/components/plant-seed-modal"
-import { usePlants } from "@/hooks/usePlants"
-import { usePlantStageScheduler } from "@/hooks/usePlantStageScheduler"
+import { useState } from 'react';
+import GardenHeader from '@/components/garden/garden-header';
+import GardenGrid from '@/components/garden/garden-grid';
+import StatsSidebar from '@/components/garden/stats-sidebar';
+import PlantDetailsModal from '@/components/garden/plant-details-modal';
+import PlantSeedModal from '@/components/garden/plant-seed-modal';
+import { usePlants } from '@/hooks/usePlants';
+import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
 
 export default function Home() {
-  const [selectedPlantId, setSelectedPlantId] = useState<bigint | null>(null)
-  const [showPlantSeedModal, setShowPlantSeedModal] = useState(false)
-  const { plants } = usePlants()
+  const [selectedPlantId, setSelectedPlantId] = useState<bigint | null>(null);
+  const [showPlantSeedModal, setShowPlantSeedModal] = useState(false);
+  const { plants } = usePlants();
 
   // Start background scheduler for automatic stage updates
-  const { isRunning } = usePlantStageScheduler()
+  const { isRunning } = usePlantStageScheduler();
 
-  const selectedPlant = plants.find((p) => p.id === selectedPlantId) || null
+  const selectedPlant = plants.find((p) => p.id === selectedPlantId) || null;
 
   return (
     <div className="min-h-screen bg-background">
       <GardenHeader schedulerRunning={isRunning} />
-      <div className="flex gap-6 p-6 max-w-7xl mx-auto">
-        <main className="flex-1">
-          <GardenGrid onSelectPlant={setSelectedPlantId} onPlantSeed={() => setShowPlantSeedModal(true)} />
-        </main>
-        <aside className="w-80">
-          <StatsSidebar selectedPlantId={selectedPlantId} />
-        </aside>
-      </div>
-
-      {/* Modals */}
-      <PlantDetailsModal
-        plant={selectedPlant}
-        isOpen={!!selectedPlantId}
-        onClose={() => setSelectedPlantId(null)}
-      />
-      <PlantSeedModal isOpen={showPlantSeedModal} onClose={() => setShowPlantSeedModal(false)} />
+      
     </div>
-  )
+  );
 }
