@@ -8,8 +8,8 @@ const _geist = Geist({ subsets: ['latin'] });
 const _geistMono = Geist_Mono({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Lisk Garden - Web3 Garden Game',
-  description: 'Grow your virtual garden on the Lisk blockchain',
+  title: 'Better Future - Better Transactions',
+  description: 'Empowering users for a sustainable future with every transaction.',
   generator: 'v0.app',
 };
 
