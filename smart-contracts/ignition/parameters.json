@@ -1,0 +1,6 @@
+{
+  "PaymentProcessorModule": {
+    "stableToken": "0x08284D90A5C3a6a9B00d9b4BDe89c27B2Bd86C59",
+    "receiptContract": "0x251C1faFEE681748c929e41B888f368a023FfdD9"
+  }
+}
