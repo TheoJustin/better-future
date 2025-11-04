@@ -1,31 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { usePlants } from '@/hooks/usePlants';
 import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
 import BetterFutureHeader from '@/components/bf/BetterFutureHeader';
 import QRCodeScanner from '@/components/bf/QR-CodeScanner';
 import { Card } from '@/components/ui/card';
+import QRGenerator from './qr-generate/page';
 
 const tabs = [
   { id: 'qr-scanner', label: 'QR Scanner' },
+  { id: 'qr-generate', label: 'QR Generator' },
   { id: 'menu', label: 'Menu' },
 ];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState('qr-scanner');
-  const [selectedPlantId, setSelectedPlantId] = useState<bigint | null>(null);
-  const [showPlantSeedModal, setShowPlantSeedModal] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'qr-scanner';
+  
   const { plants } = usePlants();
-
-  // Start background scheduler for automatic stage updates
   const { isRunning } = usePlantStageScheduler();
-  const selectedPlant = plants.find((p) => p.id === selectedPlantId) || null;
+
+  const handleTabChange = (tabId: string) => {
+    router.push(`/?tab=${tabId}`);
+  };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'qr-scanner':
         return <QRCodeScanner />;
+      case 'qr-generate':
+        return <QRGenerator />;
       case 'menu':
         return (
           <div className="flex items-center justify-center min-h-screen p-4">
@@ -59,7 +65,7 @@ export default function Home() {
         schedulerRunning={isRunning}
         tabs={tabs}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
       />
 
       {renderTabContent()}
