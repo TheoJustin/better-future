@@ -3,11 +3,15 @@
 import type React from 'react';
 
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { AlertCircle, Loader2, Upload, CheckCircle2 } from 'lucide-react';
+import { useActiveAccount } from 'panna-sdk';
 import PaymentModal from './PaymentModal';
 import BalanceDisplay from './BalanceDisplay';
+import PaymentLoading from './PaymentLoading';
+import PaymentSuccess from './PaymentSuccess';
 
 interface ExtractedData {
   address?: string;
@@ -17,6 +21,8 @@ interface ExtractedData {
 }
 
 export default function QRCodeScanner() {
+  const router = useRouter();
+  const activeAccount = useActiveAccount();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,6 +31,9 @@ export default function QRCodeScanner() {
   );
   const [error, setError] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showPaymentLoading, setShowPaymentLoading] = useState(false);
+  const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -78,9 +87,57 @@ export default function QRCodeScanner() {
   const canSendETH =
     extractedData?.valid && extractedData?.address && extractedData?.amount;
 
+  const displayName = activeAccount?.address
+    ? `${activeAccount.address.slice(0, 4)}...${activeAccount.address.slice(-4)}`
+    : 'User';
+
+  const handleInitiatePayment = () => {
+    setShowPaymentModal(false);
+    setShowPaymentLoading(true);
+  };
+
+  const handlePaymentConfirm = async () => {
+    setPaymentProcessing(true);
+    // Here you would call the actual payment function
+    // For now, we'll simulate a payment process
+    setTimeout(() => {
+      setShowPaymentLoading(false);
+      setShowPaymentSuccess(true);
+      setPaymentProcessing(false);
+    }, 2000);
+  };
+
+  const handleBackToHome = () => {
+    setShowPaymentSuccess(false);
+    router.push('/menu');
+  };
+
+  // Show payment loading screen
+  if (showPaymentLoading) {
+    return (
+      <PaymentLoading
+        onPay={handlePaymentConfirm}
+        amount={extractedData?.amount?.toString()}
+        merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : undefined}
+      />
+    );
+  }
+
+  // Show payment success screen
+  if (showPaymentSuccess) {
+    return (
+      <PaymentSuccess
+        onBackToHome={handleBackToHome}
+        userName={displayName}
+        merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : 'Merchant'}
+        amount={extractedData?.amount?.toString()}
+      />
+    );
+  }
+
   return (
     <main className="flex items-center justify-center min-h-screen p-4">
-      <div className="w-full max-w-md space-y-4">
+      <div className="max-w-md mx-auto px-4 py-8 space-y-4">
         <BalanceDisplay />
         <Card className="w-full">
         <div className="p-6 space-y-6">
@@ -160,7 +217,7 @@ export default function QRCodeScanner() {
           {/* Error State */}
           {error && (
             <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex gap-2">
-              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
               <p className="text-sm text-destructive">{error}</p>
             </div>
           )}
@@ -171,14 +228,14 @@ export default function QRCodeScanner() {
               <div className="space-y-2">
                 {extractedData.valid ? (
                   <div className="flex gap-2 items-start p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                     <p className="text-sm font-medium text-green-700 dark:text-green-300">
                       Valid QR code detected!
                     </p>
                   </div>
                 ) : (
                   <div className="flex gap-2 items-start p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-amber-700 dark:text-amber-300">
                       {extractedData.error || 'Could not extract complete data'}
                     </p>
@@ -222,7 +279,7 @@ export default function QRCodeScanner() {
                   </div>
                   <Button
                     className="w-full mt-2"
-                    onClick={() => setShowPaymentModal(true)}
+                    onClick={handleInitiatePayment}
                   >
                     Pay with IDR
                   </Button>

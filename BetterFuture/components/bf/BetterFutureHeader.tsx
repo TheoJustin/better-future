@@ -28,8 +28,8 @@ export default function BetterFutureHeader({
     <header className="border-b border-border bg-card sticky top-0 z-50 animate-slide-in-down">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-8">
         {/* Logo and branding */}
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="w-10 h-10 bg-linear-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ease-out">
             <Earth className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -41,7 +41,7 @@ export default function BetterFutureHeader({
         </div>
 
         {tabs.length > 0 && (
-          <div className="flex items-center gap-1 flex-grow justify-center">
+          <div className="flex items-center gap-1 grow justify-center">
             {tabs.map((tab) => (
               <div
                 key={tab.id}
@@ -61,7 +61,7 @@ export default function BetterFutureHeader({
         )}
 
         {/* Right side actions */}
-        <div className="flex items-center gap-4 flex-shrink-0">
+        <div className="flex items-center gap-4 shrink-0">
           {schedulerRunning && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30">
               <RefreshCw className="w-4 h-4 text-green-600 dark:text-green-400 animate-spin" />
