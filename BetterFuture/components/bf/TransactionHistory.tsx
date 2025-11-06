@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Receipt, ExternalLink } from 'lucide-react';
 import { useContract } from '@/hooks/useContract';
 import { getReceiptBalance, getReceiptTokenURI } from '@/lib/contract';
-import { formatUnits } from 'thirdweb/utils';
+import TransactionDetailsModal from './TransactionDetailsModal';
 
 interface Transaction {
   tokenId: number;
@@ -20,6 +20,8 @@ export default function TransactionHistory() {
   const { client, account } = useContract();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const loadTransactions = async () => {
     if (!client || !account) return;
@@ -135,8 +137,8 @@ export default function TransactionHistory() {
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          // Open block explorer or transaction details
-                          console.log('View receipt details:', tx);
+                          setSelectedTransaction(tx);
+                          setShowDetailsModal(true);
                         }}
                       >
                         <ExternalLink className="w-3 h-3 mr-1" />
@@ -150,6 +152,12 @@ export default function TransactionHistory() {
           )}
         </div>
       </Card>
+      
+      <TransactionDetailsModal
+        isOpen={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        transaction={selectedTransaction}
+      />
     </div>
   );
 }
