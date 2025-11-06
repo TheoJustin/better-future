@@ -14,8 +14,8 @@ import QRGenerator from './qr-generate/page';
 const tabs = [
   { id: 'qr-scanner', label: 'QR Scanner' },
   { id: 'qr-generate', label: 'QR Generator' },
-  { id: 'menu', label: 'Menu' },
   { id: 'history', label: 'History' },
+  { id: 'menu', label: 'Menu' },
 ];
 
 export default function Home() {
@@ -36,6 +36,8 @@ export default function Home() {
         return <QRCodeScanner />;
       case 'qr-generate':
         return <QRGenerator />;
+      case 'history':
+        return <TransactionHistory />;
       case 'menu':
         return (
           <div className="flex items-center justify-center min-h-screen p-4">
@@ -50,7 +52,9 @@ export default function Home() {
                   <Receipt className="w-5 h-5 mr-3" />
                   <div className="text-left">
                     <h3 className="font-semibold">Transaction History</h3>
-                    <p className="text-sm text-muted-foreground">View your payment receipts</p>
+                    <p className="text-sm text-muted-foreground">
+                      View your payment receipts
+                    </p>
                   </div>
                 </Button>
                 <Button
@@ -61,7 +65,9 @@ export default function Home() {
                   <Settings className="w-5 h-5 mr-3" />
                   <div className="text-left">
                     <h3 className="font-semibold">Settings</h3>
-                    <p className="text-sm text-muted-foreground">Configure your preferences</p>
+                    <p className="text-sm text-muted-foreground">
+                      Configure your preferences
+                    </p>
                   </div>
                 </Button>
                 <Button
@@ -72,15 +78,15 @@ export default function Home() {
                   <Info className="w-5 h-5 mr-3" />
                   <div className="text-left">
                     <h3 className="font-semibold">About</h3>
-                    <p className="text-sm text-muted-foreground">Learn more about BetterFuture</p>
+                    <p className="text-sm text-muted-foreground">
+                      Learn more about BetterFuture
+                    </p>
                   </div>
                 </Button>
               </div>
             </Card>
           </div>
         );
-      case 'history':
-        return <TransactionHistory />;
       default:
         return <QRCodeScanner />;
     }

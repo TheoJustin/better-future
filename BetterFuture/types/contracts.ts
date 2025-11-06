@@ -45,9 +45,9 @@ export const LISK_GARDEN_ABI = [{"inputs":[],"stateMutability":"nonpayable","typ
 export const IDR_STABLE_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_IDR_STABLE_CONTRACT_ADDRESS || '0xa8Fdb246849304965440C82304aC6d8df578C2D4';
 export const PAYMENT_PROCESSOR_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_PAYMENT_PROCESSOR_CONTRACT_ADDRESS || '0xD7eC51a2a6e2DF143342c92cFfF91F9e25b4e1e0';
+  process.env.NEXT_PUBLIC_PAYMENT_PROCESSOR_CONTRACT_ADDRESS || '0xAC54F69119bffbC101cCA6adFB1Ef65CFa73cca1';
 export const RECEIPT_NFT_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_RECEIPT_NFT_CONTRACT_ADDRESS || '0x251C1faFEE681748c929e41B888f368a023FfdD9';
+  process.env.NEXT_PUBLIC_RECEIPT_NFT_CONTRACT_ADDRESS || '0x092C45Be1a964bAe01fb33Fd12072BfB335e5E93';
 
 export const IDR_STABLE_ABI = [
   {
@@ -283,6 +283,13 @@ export const IDR_STABLE_ABI = [
     name: 'deposit',
     outputs: [],
     stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'EXCHANGE_RATE',
+    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
+    stateMutability: 'view',
     type: 'function',
   },
   {
@@ -705,20 +712,6 @@ export const RECEIPT_NFT_ABI = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'minter',
-        type: 'address',
-      },
-      { indexed: false, internalType: 'bool', name: 'allowed', type: 'bool' },
-    ],
-    name: 'MinterUpdated',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
         name: 'previousOwner',
         type: 'address',
       },
@@ -792,13 +785,6 @@ export const RECEIPT_NFT_ABI = [
     type: 'function',
   },
   {
-    inputs: [{ internalType: 'address', name: '', type: 'address' }],
-    name: 'minters',
-    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
     inputs: [],
     name: 'name',
     outputs: [{ internalType: 'string', name: '', type: 'string' }],
@@ -855,16 +841,6 @@ export const RECEIPT_NFT_ABI = [
       { internalType: 'bool', name: 'approved', type: 'bool' },
     ],
     name: 'setApprovalForAll',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: 'minter', type: 'address' },
-      { internalType: 'bool', name: 'allowed', type: 'bool' },
-    ],
-    name: 'setMinter',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',

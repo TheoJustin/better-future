@@ -4,7 +4,7 @@ async function main() {
   const [owner] = await hre.ethers.getSigners();
   
   // Get the deployed contract
-  const idrTokenAddress = "0x08284D90A5C3a6a9B00d9b4BDe89c27B2Bd86C59";
+  const idrTokenAddress = "0xa8Fdb246849304965440C82304aC6d8df578C2D4";
   const IDRToken = await hre.ethers.getContractAt("IDRToken", idrTokenAddress);
   
   // Address to mint to (replace with actual user address)

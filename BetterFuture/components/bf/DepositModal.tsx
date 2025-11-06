@@ -60,9 +60,9 @@ export default function DepositModal({ isOpen, onClose, onSuccess }: DepositModa
 
         {!success ? (
           <div className="space-y-4">
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                <strong>Exchange Rate:</strong> 1 ETH = 1000 IDR
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                <strong>Demo Mode:</strong> Use mint script to get IDR tokens
               </p>
             </div>
 
@@ -94,11 +94,11 @@ export default function DepositModal({ isOpen, onClose, onSuccess }: DepositModa
                 Cancel
               </Button>
               <Button 
-                onClick={handleDeposit} 
-                disabled={!amount || loading || !client}
+                onClick={() => setSuccess(true)} 
+                disabled={!amount}
                 className="flex-1"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Deposit ETH'}
+                Request Tokens
               </Button>
             </div>
           </div>

@@ -2,5 +2,8 @@
   "IDRTokenModule#IDRToken": "0x08284D90A5C3a6a9B00d9b4BDe89c27B2Bd86C59",
   "ReceiptNFTModule#ReceiptNFT": "0x251C1faFEE681748c929e41B888f368a023FfdD9",
   "PaymentProcessorModule#PaymentProcessor": "0xD7eC51a2a6e2DF143342c92cFfF91F9e25b4e1e0",
-  "IDRTokenV2Module#IDRToken": "0xa8Fdb246849304965440C82304aC6d8df578C2D4"
+  "IDRTokenV2Module#IDRToken": "0xa8Fdb246849304965440C82304aC6d8df578C2D4",
+  "PaymentProcessorV2Module#PaymentProcessor": "0x5dB8c24CcDccEB6eDAA0C32B2832a3C164FB313a",
+  "ReceiptNFTV2Module#ReceiptNFTV2": "0x092C45Be1a964bAe01fb33Fd12072BfB335e5E93",
+  "PaymentProcessorV3Module#PaymentProcessor": "0xAC54F69119bffbC101cCA6adFB1Ef65CFa73cca1"
 }

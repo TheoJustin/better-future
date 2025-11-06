@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -28,8 +28,21 @@ interface PaymentModalProps {
 
 export default function PaymentModal({ isOpen, onClose, merchantAddress = '', amount = '' }: PaymentModalProps) {
   const { client, account } = useContract();
-  const [merchant, setMerchant] = useState(merchantAddress);
-  const [paymentAmount, setPaymentAmount] = useState(amount);
+  const [merchant, setMerchant] = useState(merchantAddress || '');
+  const [paymentAmount, setPaymentAmount] = useState(amount || '');
+
+  // Update fields when props change
+  useEffect(() => {
+    if (merchantAddress) setMerchant(merchantAddress);
+    if (amount) setPaymentAmount(amount);
+  }, [merchantAddress, amount]);
+
+  // Load balance when modal opens
+  useEffect(() => {
+    if (isOpen && client && account) {
+      loadData();
+    }
+  }, [isOpen, client, account]);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'input' | 'confirm' | 'processing' | 'success' | 'error'>('input');
   const [error, setError] = useState<string | null>(null);
@@ -134,6 +147,7 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
             {client && account && (
               <div className="text-sm text-muted-foreground">
                 Balance: {formatUnits(balance, 18)} IDR
+                {balance === 0n && <span className="text-amber-600"> (Click + to deposit)</span>}
               </div>
             )}
 
