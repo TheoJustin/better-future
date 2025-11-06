@@ -8,6 +8,8 @@ import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20P
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 contract IDRToken is ERC20, ERC20Burnable, Ownable, ERC20Permit {
+    uint256 public constant EXCHANGE_RATE = 1000;
+    
     constructor(address initialOwner)
         ERC20("IDRToken", "IDR")
         Ownable(initialOwner)
@@ -22,4 +24,12 @@ contract IDRToken is ERC20, ERC20Burnable, Ownable, ERC20Permit {
     function burn(address from, uint256 amount) external onlyOwner {
         _burn(from, amount);
     }
+
+
+    function deposit() external payable {
+        require(msg.value > 0, "Must send ETH");
+        uint256 idrAmount = msg.value * EXCHANGE_RATE;
+        _mint(msg.sender, idrAmount);
+    }
+    
 }

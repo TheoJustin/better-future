@@ -15,3 +15,9 @@ ReceiptNFT.sol
 Contract Address : 
 0x251C1faFEE681748c929e41B888f368a023FfdD9
 https://sepolia-blockscout.lisk.com//address/0x251C1faFEE681748c929e41B888f368a023FfdD9#code
+
+
+IDRStableV2
+Contract Address : 
+0xa8Fdb246849304965440C82304aC6d8df578C2D4
+https://sepolia-blockscout.lisk.com//address/0xa8Fdb246849304965440C82304aC6d8df578C2D4#code

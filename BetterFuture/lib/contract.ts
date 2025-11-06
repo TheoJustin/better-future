@@ -9,6 +9,7 @@ import { liskSepolia } from 'panna-sdk'
 import { prepareContractCall, sendTransaction, readContract, waitForReceipt } from 'thirdweb/transaction'
 import { getContract } from 'thirdweb/contract'
 import { toWei } from 'thirdweb/utils'
+import { formatUnits, parseUnits } from '@/lib/utils-web3'
 import {
   LISK_GARDEN_CONTRACT_ADDRESS,
   LISK_GARDEN_ABI,
@@ -20,6 +21,12 @@ import {
   STAGE_DURATION,
   WATER_DEPLETION_TIME,
   WATER_DEPLETION_RATE,
+  IDR_STABLE_CONTRACT_ADDRESS,
+  IDR_STABLE_ABI,
+  PAYMENT_PROCESSOR_CONTRACT_ADDRESS,
+  PAYMENT_PROCESSOR_ABI,
+  RECEIPT_NFT_CONTRACT_ADDRESS,
+  RECEIPT_NFT_ABI,
 } from '@/types/contracts'
 
 // Convert raw contract plant data to typed Plant interface
@@ -305,6 +312,150 @@ export function isCritical(plant: Plant): boolean {
   // Blooming plants can't be critical - water is preserved
   if (plant.stage === GrowthStage.BLOOMING) return false
   return getClientWaterLevel(plant) < 20
+}
+
+// IDRStable Contract Functions
+
+export async function getIDRBalance(client: any, address: string): Promise<bigint> {
+  const contract = getContract({
+    client,
+    chain: liskSepolia,
+    address: IDR_STABLE_CONTRACT_ADDRESS!,
+  })
+
+  return await readContract({
+    contract,
+    method: 'function balanceOf(address account) view returns (uint256)',
+    params: [address],
+  })
+}
+
+export async function approveIDR(client: any, account: any, spender: string, amount: bigint) {
+  const tx = prepareContractCall({
+    contract: getContract({
+      client,
+      chain: liskSepolia,
+      address: IDR_STABLE_CONTRACT_ADDRESS!,
+    }),
+    method: 'function approve(address spender, uint256 value) returns (bool)',
+    params: [spender, amount],
+  })
+
+  const result = await sendTransaction({ account, transaction: tx })
+  await waitForReceipt(result)
+  return result
+}
+
+export async function transferIDR(client: any, account: any, to: string, amount: bigint) {
+  const tx = prepareContractCall({
+    contract: getContract({
+      client,
+      chain: liskSepolia,
+      address: IDR_STABLE_CONTRACT_ADDRESS!,
+    }),
+    method: 'function transfer(address to, uint256 value) returns (bool)',
+    params: [to, amount],
+  })
+
+  const result = await sendTransaction({ account, transaction: tx })
+  await waitForReceipt(result)
+  return result
+}
+
+export async function depositIDR(client: any, account: any, ethAmount: string) {
+  const tx = prepareContractCall({
+    contract: getContract({
+      client,
+      chain: liskSepolia,
+      address: IDR_STABLE_CONTRACT_ADDRESS!,
+    }),
+    method: 'function deposit() payable',
+    params: [],
+    value: toWei(ethAmount),
+  })
+
+  const result = await sendTransaction({ account, transaction: tx })
+  await waitForReceipt(result)
+  return result
+}
+
+// PaymentProcessor Contract Functions
+
+export async function payMerchant(
+  client: any,
+  account: any,
+  merchant: string,
+  amount: bigint,
+  receiptTokenURI: string
+) {
+  const tx = prepareContractCall({
+    contract: getContract({
+      client,
+      chain: liskSepolia,
+      address: PAYMENT_PROCESSOR_CONTRACT_ADDRESS!,
+    }),
+    method: 'function payMerchant(address merchant, uint256 amount, string receiptTokenURI)',
+    params: [merchant, amount, receiptTokenURI],
+  })
+
+  const result = await sendTransaction({ account, transaction: tx })
+  await waitForReceipt(result)
+  return result
+}
+
+export async function getPlatformFee(client: any): Promise<bigint> {
+  const contract = getContract({
+    client,
+    chain: liskSepolia,
+    address: PAYMENT_PROCESSOR_CONTRACT_ADDRESS!,
+  })
+
+  return await readContract({
+    contract,
+    method: 'function platformFeeBps() view returns (uint256)',
+    params: [],
+  })
+}
+
+// ReceiptNFT Contract Functions
+
+export async function getReceiptBalance(client: any, address: string): Promise<bigint> {
+  const contract = getContract({
+    client,
+    chain: liskSepolia,
+    address: RECEIPT_NFT_CONTRACT_ADDRESS!,
+  })
+
+  return await readContract({
+    contract,
+    method: 'function balanceOf(address owner) view returns (uint256)',
+    params: [address],
+  })
+}
+
+export async function getReceiptTokenURI(client: any, tokenId: bigint): Promise<string> {
+  const contract = getContract({
+    client,
+    chain: liskSepolia,
+    address: RECEIPT_NFT_CONTRACT_ADDRESS!,
+  })
+
+  return await readContract({
+    contract,
+    method: 'function tokenURI(uint256 tokenId) view returns (string)',
+    params: [tokenId],
+  })
+}
+
+// Helper function to calculate platform fee
+export function calculatePlatformFee(amount: bigint, feeBps: bigint): bigint {
+  return (amount * feeBps) / BigInt(10000)
+}
+
+// Helper function to calculate merchant amount after fee
+export function calculateMerchantAmount(amount: bigint, feeBps: bigint): bigint {
+  const platformFee = calculatePlatformFee(amount, feeBps)
+  return amount - platformFee
 }
 
 // Calculate expected stage based on time (what stage the plant SHOULD be at)

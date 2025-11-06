@@ -6,6 +6,8 @@ import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { AlertCircle, Loader2, Upload, CheckCircle2 } from 'lucide-react';
+import PaymentModal from './PaymentModal';
+import BalanceDisplay from './BalanceDisplay';
 
 interface ExtractedData {
   address?: string;
@@ -22,6 +24,7 @@ export default function QRCodeScanner() {
     null
   );
   const [error, setError] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -77,7 +80,9 @@ export default function QRCodeScanner() {
 
   return (
     <main className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
+      <div className="w-full max-w-md space-y-4">
+        <BalanceDisplay />
+        <Card className="w-full">
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="text-center">
@@ -199,41 +204,42 @@ export default function QRCodeScanner() {
                 </pre>
               </div>
 
-              {/* ETH Transfer Info */}
+              {/* IDR Payment Info */}
               {canSendETH && (
                 <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg space-y-2">
                   <p className="text-sm font-semibold text-foreground">
-                    Ready to send ETH:
+                    Ready to send IDR:
                   </p>
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <p>
-                      <span className="font-medium">Address:</span>{' '}
+                      <span className="font-medium">Merchant:</span>{' '}
                       {extractedData.address}
                     </p>
                     <p>
                       <span className="font-medium">Amount:</span>{' '}
-                      {extractedData.amount} ETH
+                      {extractedData.amount} IDR
                     </p>
                   </div>
                   <Button
                     className="w-full mt-2"
-                    onClick={() => {
-                      // Here you would trigger the ETH transfer
-                      console.log(
-                        'Send ETH to:',
-                        extractedData.address,
-                        extractedData.amount
-                      );
-                    }}
+                    onClick={() => setShowPaymentModal(true)}
                   >
-                    Send ETH
+                    Pay with IDR
                   </Button>
                 </div>
               )}
             </div>
           )}
         </div>
-      </Card>
+        </Card>
+        
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          merchantAddress={extractedData?.address}
+          amount={extractedData?.amount?.toString()}
+        />
+      </div>
     </main>
   );
 }
