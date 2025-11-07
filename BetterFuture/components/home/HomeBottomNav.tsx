@@ -1,16 +1,21 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { Receipt } from 'lucide-react'
+import { Receipt, Wallet } from 'lucide-react'
 
 const imgImage17 = 'https://www.figma.com/api/mcp/asset/b4025f63-9942-4eec-a6f5-f22d4b051ad7'
 
 interface HomeBottomNavProps {
   onButtonClick?: () => void
   onHistoryClick?: () => void
+  onDepositClick?: () => void
 }
 
-export function HomeBottomNav({ onButtonClick, onHistoryClick }: HomeBottomNavProps) {
+export function HomeBottomNav({
+  onButtonClick,
+  onHistoryClick,
+  onDepositClick,
+}: HomeBottomNavProps) {
   const router = useRouter()
 
   function handleQRClick() {
@@ -23,6 +28,10 @@ export function HomeBottomNav({ onButtonClick, onHistoryClick }: HomeBottomNavPr
     onHistoryClick?.()
     // Navigate to history page
     router.push('/history')
+  }
+
+  function handleDepositClick() {
+    onDepositClick?.()
   }
 
   return (
@@ -41,6 +50,17 @@ export function HomeBottomNav({ onButtonClick, onHistoryClick }: HomeBottomNavPr
               src={imgImage17}
             />
           </div>
+        </div>
+      </button>
+
+      {/* Deposit Button */}
+      <button
+        onClick={handleDepositClick}
+        className="bg-[#1899d6] block cursor-pointer h-[107px] overflow-hidden relative rounded-[13px] shrink-0 w-[96px] hover:bg-[#1cb0f6] transition-colors"
+        aria-label="Deposit Koin"
+      >
+        <div className="absolute bg-[#1cb0f6] box-border flex gap-2 h-[93px] items-center justify-center left-0 overflow-hidden px-4 py-3 right-px rounded-[13px] top-1/2 translate-y-[-50%]">
+          <Wallet className="size-[50px] text-white" />
         </div>
       </button>
 
