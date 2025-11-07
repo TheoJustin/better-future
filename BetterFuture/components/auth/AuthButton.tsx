@@ -1,6 +1,7 @@
 'use client'
 
 import { ButtonHTMLAttributes, ReactNode } from 'react'
+import { LoginButton, liskSepolia } from 'panna-sdk'
 
 import { cn } from '@/lib/utils'
 
@@ -34,3 +35,6 @@ export function AuthButton({
   )
 }
 
+
+
+{/* <LoginButton chain={liskSepolia} /> */}

@@ -1,8 +1,12 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { AuthButton } from './AuthButton'
+import { useActiveAccount } from 'panna-sdk'
+import { LoginButton, liskSepolia } from 'panna-sdk'
 
+import { AuthButton } from './AuthButton'
+import { WalletLoginButton } from './WalletLoginButton'
 
 interface LoginFormProps {
   onLoginClick?: () => void
@@ -11,11 +15,15 @@ interface LoginFormProps {
 
 export function LoginForm({ onLoginClick, onRegisterClick }: LoginFormProps) {
   const router = useRouter()
+  const activeAccount = useActiveAccount()
+  const isConnected = !!activeAccount
 
-  function handleLogin() {
-    onLoginClick?.()
-    // TODO: Implement login logic or navigation
-  }
+  // Redirect to home page when wallet is connected
+  useEffect(() => {
+    if (isConnected) {
+      router.push('/')
+    }
+  }, [isConnected, router])
 
   function handleRegister() {
     onRegisterClick?.()
@@ -24,10 +32,12 @@ export function LoginForm({ onLoginClick, onRegisterClick }: LoginFormProps) {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <AuthButton type="button" onClick={handleLogin}>
-        Login
-      </AuthButton>
+      <WalletLoginButton />
 
+    
+      {/* <AuthButton type="button" onClick={handleRegister}>
+        <LoginButton chain={liskSepolia} />
+      </AuthButton> */}
       <AuthButton type="button" onClick={handleRegister}>
         Register
       </AuthButton>
