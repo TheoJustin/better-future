@@ -124,8 +124,7 @@ export default function QRCodeScanner() {
     : 'User';
 
   const handleInitiatePayment = () => {
-    setShowPaymentModal(false);
-    setShowPaymentLoading(true);
+    setShowPaymentModal(true);
   };
 
   const handlePaymentConfirm = async () => {
@@ -311,7 +310,7 @@ export default function QRCodeScanner() {
                   </div>
                   <Button
                     className="w-full mt-2"
-                    onClick={handleInitiatePayment}
+                    onClick={() => setShowPaymentModal(true)}
                   >
                     Pay with IDR
                   </Button>
