@@ -21,7 +21,7 @@ export function LoginForm({ onLoginClick, onRegisterClick }: LoginFormProps) {
   // Redirect to home page when wallet is connected
   useEffect(() => {
     if (isConnected) {
-      router.push('/')
+      router.push('/home')
     }
   }, [isConnected, router])
 
