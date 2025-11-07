@@ -1,49 +1,59 @@
-import { generateObject } from 'ai';
-import { google } from '@ai-sdk/google';
-import { z } from 'zod';
-
-const qrDataSchema = z.object({
-  address: z.string().describe('Ethereum address extracted from QR code'),
-  amount: z.string().describe('Amount to send in ETH'),
-  valid: z
-    .boolean()
-    .describe('Whether the QR code contains valid address and amount'),
-});
+// Simple API that just parses QR text
+function parseQRData(qrText: string) {
+  try {
+    // Handle ethereum: URI format
+    if (qrText.startsWith('ethereum:')) {
+      const match = qrText.match(/ethereum:([^@]+)@(\d+)\?value=([^&]+)/);
+      if (match) {
+        const [, address, chainId, amount] = match;
+        return {
+          address: address.trim(),
+          amount: amount.trim(),
+          valid: /^0x[a-fA-F0-9]{40}$/.test(address) && !isNaN(parseFloat(amount))
+        };
+      }
+    }
+    
+    // Handle JSON format
+    if (qrText.startsWith('{')) {
+      const data = JSON.parse(qrText);
+      return {
+        address: data.address || '',
+        amount: data.amount || '',
+        valid: /^0x[a-fA-F0-9]{40}$/.test(data.address) && !isNaN(parseFloat(data.amount))
+      };
+    }
+    
+    return {
+      address: '',
+      amount: '',
+      valid: false,
+      error: 'Unsupported QR format'
+    };
+  } catch (error) {
+    return {
+      address: '',
+      amount: '',
+      valid: false,
+      error: 'Failed to parse QR code'
+    };
+  }
+}
 
 export async function POST(req: Request) {
   try {
-    const { image } = await req.json();
+    const { qrText } = await req.json();
 
-    if (!image) {
-      return Response.json({ error: 'No image provided' }, { status: 400 });
+    if (!qrText) {
+      return Response.json({ error: 'No QR text provided' }, { status: 400 });
     }
-
-    // Extract base64 data from data URL
-    const base64Data = image.split(',')[1] || image;
-
-    const { object } = await generateObject({
-      model: google('gemini-2.0-flash-exp'),
-      schema: qrDataSchema,
-      messages: [
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'text',
-              text: 'Scan this QR code and extract the Ethereum address and amount to send. Return the address and amount as a valid JSON object. If you cannot extract valid data, set valid to false and describe the issue.',
-            },
-            {
-              type: 'image',
-              image: base64Data,
-            },
-          ],
-        },
-      ],
-    });
-
-    return Response.json(object);
+    
+    // Parse the QR data
+    const result = parseQRData(qrText);
+    
+    return Response.json(result);
   } catch (error) {
-    console.error('Error scanning QR code:', error);
-    return Response.json({ error: 'Failed to scan QR code' }, { status: 500 });
+    console.error('Error parsing QR code:', error);
+    return Response.json({ error: 'Failed to parse QR code' }, { status: 500 });
   }
 }
