@@ -9,7 +9,15 @@ import { PaymentConfirmationLayout } from '@/components/payment/PaymentConfirmat
 import { PaymentLoadingLayout } from '@/components/payment/PaymentLoadingLayout'
 import { PaymentSuccessLayout } from '@/components/payment/PaymentSuccessLayout'
 import { useContract } from '@/hooks/useContract'
-import { getPlatformFee, calculatePlatformFee, calculateMerchantAmount } from '@/lib/contract'
+import {
+  getIDRBalance,
+  approveIDR,
+  payMerchant,
+  getPlatformFee,
+  calculatePlatformFee,
+  calculateMerchantAmount,
+} from '@/lib/contract'
+import { PAYMENT_PROCESSOR_CONTRACT_ADDRESS } from '@/types/contracts'
 import { parseUnits, formatUnits } from '@/lib/utils-web3'
 
 interface ExtractedData {
@@ -23,13 +31,16 @@ export default function QRScanPage() {
   const router = useRouter()
   const activeAccount = useActiveAccount()
   const isConnected = !!activeAccount
-  const { client } = useContract()
+  const { client, account } = useContract()
   const [extractedData, setExtractedData] = useState<ExtractedData | null>(null)
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState(false)
   const [showPaymentLoading, setShowPaymentLoading] = useState(false)
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false)
   const [paymentProcessing, setPaymentProcessing] = useState(false)
   const [platformFeeBps, setPlatformFeeBps] = useState<bigint>(BigInt(0))
+  const [balance, setBalance] = useState<bigint>(BigInt(0))
+  const [error, setError] = useState<string | null>(null)
+  const [txHash, setTxHash] = useState<string>('')
 
   // Redirect to login if not connected
   useEffect(() => {
@@ -38,18 +49,30 @@ export default function QRScanPage() {
     }
   }, [isConnected, router])
 
-  // Load platform fee when component mounts
+  // Load platform fee and balance when component mounts
   useEffect(() => {
-    if (client) {
-      getPlatformFee(client)
-        .then(setPlatformFeeBps)
-        .catch(console.error)
+    const loadData = async () => {
+      if (!client || !account?.address) return
+
+      try {
+        const [userBalance, feeBps] = await Promise.all([
+          getIDRBalance(client, account.address),
+          getPlatformFee(client),
+        ])
+        setBalance(userBalance)
+        setPlatformFeeBps(feeBps)
+      } catch (err) {
+        console.error('Error loading data:', err)
+      }
     }
-  }, [client])
+
+    loadData()
+  }, [client, account])
 
   function handleBack() {
     if (showPaymentConfirmation) {
       setShowPaymentConfirmation(false)
+      setError(null)
     } else {
       router.push('/home')
     }
@@ -64,26 +87,64 @@ export default function QRScanPage() {
     setShowPaymentConfirmation(true)
   }
 
-  function handleConfirmPayment() {
+  async function handleConfirmPayment() {
+    if (!client || !account || !extractedData?.address || !extractedData?.amount) {
+      setError('Missing payment information')
+      return
+    }
+
     setShowPaymentConfirmation(false)
     setShowPaymentLoading(true)
     setPaymentProcessing(true)
-  }
+    setError(null)
 
-  // Auto-process payment when loading screen is shown
-  useEffect(() => {
-    if (showPaymentLoading && paymentProcessing) {
-      // Here you would call the actual payment function
-      // For now, we'll simulate a payment process
-      const timer = setTimeout(() => {
-        setShowPaymentLoading(false)
-        setShowPaymentSuccess(true)
-        setPaymentProcessing(false)
-      }, 2000)
+    try {
+      const amountWei = parseUnits(extractedData.amount.toString(), 18)
 
-      return () => clearTimeout(timer)
+      // Check balance
+      if (balance < amountWei) {
+        throw new Error('Insufficient IDR balance')
+      }
+
+      // Step 1: Approve payment processor to spend IDR
+      await approveIDR(client, account, PAYMENT_PROCESSOR_CONTRACT_ADDRESS!, amountWei)
+
+      // Step 2: Create receipt URI
+      const receiptURI = JSON.stringify({
+        merchant: extractedData.address,
+        amount: extractedData.amount.toString(),
+        timestamp: Date.now(),
+        buyer: account.address,
+      })
+
+      // Step 3: Make payment
+      const result = await payMerchant(
+        client,
+        account,
+        extractedData.address,
+        amountWei,
+        receiptURI,
+      )
+
+      setTxHash(result.transactionHash || '')
+      setShowPaymentLoading(false)
+      setShowPaymentSuccess(true)
+      setPaymentProcessing(false)
+
+      // Refresh balance after successful payment
+      if (client && account?.address) {
+        const newBalance = await getIDRBalance(client, account.address)
+        setBalance(newBalance)
+      }
+    } catch (err: any) {
+      console.error('Payment error:', err)
+      setError(err.message || 'Payment failed')
+      setShowPaymentLoading(false)
+      setPaymentProcessing(false)
+      // Show error and allow user to retry
+      setShowPaymentConfirmation(true)
     }
-  }, [showPaymentLoading, paymentProcessing])
+  }
 
   function handleBackToHome() {
     setShowPaymentSuccess(false)
@@ -118,6 +179,14 @@ export default function QRScanPage() {
           onPay={handleConfirmPayment}
           loading={paymentProcessing}
         />
+        {/* Error Display */}
+        {error && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 max-w-[430px] w-full px-4 z-50">
+            <div className="bg-red-500 text-white p-4 rounded-lg shadow-lg">
+              <p className="text-sm font-medium">{error}</p>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
