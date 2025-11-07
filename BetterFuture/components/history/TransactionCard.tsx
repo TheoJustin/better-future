@@ -6,13 +6,24 @@ interface TransactionCardProps {
   to: string
   date: string
   nftId: string | number
+  onClick?: () => void
 }
 
 const imgVector39 = 'https://www.figma.com/api/mcp/asset/317ba1fe-68ac-49d8-9eca-543e9f242ec5'
 
-export function TransactionCard({ amount, from, to, date, nftId }: TransactionCardProps) {
+export function TransactionCard({
+  amount,
+  from,
+  to,
+  date,
+  nftId,
+  onClick,
+}: TransactionCardProps) {
   return (
-    <div className="bg-[#1899d6] h-[91px] overflow-hidden relative rounded-[13px] shrink-0 w-[398px]">
+    <div
+      className="bg-[#1899d6] h-[91px] overflow-hidden relative rounded-[13px] shrink-0 w-[398px] cursor-pointer hover:opacity-90 transition-opacity"
+      onClick={onClick}
+    >
       <div className="absolute bg-[#1cb0f6] bottom-[4px] left-0 overflow-hidden right-0 rounded-[13px] top-0 pr-[60px]">
         {/* Amount */}
         <div className="absolute flex flex-col font-bold justify-center leading-[100%] left-[16px] text-base text-[#ddf4ff] top-[22.5px] tracking-[-0.32px] translate-y-[-50%] uppercase whitespace-nowrap">

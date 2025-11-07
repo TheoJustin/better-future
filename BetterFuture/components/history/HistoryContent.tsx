@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useContract } from '@/hooks/useContract'
 import { getReceiptBalance, getReceiptTokenURI } from '@/lib/contract'
 import { TransactionCard } from './TransactionCard'
+import { TransactionDetailsModal } from './TransactionDetailsModal'
 
 interface Transaction {
   tokenId: number
@@ -17,6 +18,8 @@ export function HistoryContent() {
   const { client, account } = useContract()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
 
   const loadTransactions = async () => {
     if (!client || !account) return
@@ -100,37 +103,57 @@ export function HistoryContent() {
     )
   }
 
+  function handleCardClick(tx: Transaction) {
+    setSelectedTransaction(tx)
+    setShowDetailsModal(true)
+  }
+
+  function handleCloseModal() {
+    setShowDetailsModal(false)
+    setSelectedTransaction(null)
+  }
+
   return (
-    <div className="flex flex-col gap-9 items-center w-full">
-      {/* Title */}
-      <div className="flex flex-col font-black justify-center leading-[100%] relative shrink-0 text-[32px] text-black tracking-[-0.64px] whitespace-nowrap">
-        <p className="leading-normal">Riwayat Transaksi Kamu</p>
+    <>
+      <div className="flex flex-col gap-9 items-center w-full">
+        {/* Title */}
+        <div className="flex flex-col font-black justify-center leading-[100%] relative shrink-0 text-[32px] text-black tracking-[-0.64px] whitespace-nowrap">
+          <p className="leading-normal">Riwayat Transaksi Kamu</p>
+        </div>
+
+        {/* Transactions List */}
+        <div className="flex flex-col gap-3 items-center justify-center relative shrink-0 w-full max-w-[398px]">
+          {loading && transactions.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Memuat transaksi...</p>
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Tidak ada transaksi ditemukan</p>
+            </div>
+          ) : (
+            transactions.map((tx) => (
+              <TransactionCard
+                key={tx.tokenId}
+                amount={formatAmount(tx.amount)}
+                from={formatAddress(tx.buyer)}
+                to={formatAddress(tx.merchant)}
+                date={formatDate(tx.timestamp)}
+                nftId={tx.tokenId}
+                onClick={() => handleCardClick(tx)}
+              />
+            ))
+          )}
+        </div>
       </div>
 
-      {/* Transactions List */}
-      <div className="flex flex-col gap-3 items-center justify-center relative shrink-0 w-full max-w-[398px]">
-        {loading && transactions.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Memuat transaksi...</p>
-          </div>
-        ) : transactions.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Tidak ada transaksi ditemukan</p>
-          </div>
-        ) : (
-          transactions.map((tx) => (
-            <TransactionCard
-              key={tx.tokenId}
-              amount={formatAmount(tx.amount)}
-              from={formatAddress(tx.buyer)}
-              to={formatAddress(tx.merchant)}
-              date={formatDate(tx.timestamp)}
-              nftId={tx.tokenId}
-            />
-          ))
-        )}
-      </div>
-    </div>
+      {/* Transaction Details Modal */}
+      <TransactionDetailsModal
+        isOpen={showDetailsModal}
+        onClose={handleCloseModal}
+        transaction={selectedTransaction}
+      />
+    </>
   )
 }
 
