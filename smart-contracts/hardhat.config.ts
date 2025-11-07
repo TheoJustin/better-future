@@ -6,6 +6,9 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+// Get private key from env, or use a default test key for local testing
+const PRIVATE_KEY = process.env.PRIVATE_KEY || '';
+
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxViemPlugin, hardhatIgnitionViemPlugin, hardhatVerify],
   solidity: {
@@ -21,7 +24,7 @@ const config: HardhatUserConfig = {
     'lisk-sepolia': {
       type: 'http',
       url: 'https://rpc.sepolia-api.lisk.com',
-      accounts: [process.env.PRIVATE_KEY as string],
+      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
       chainId: 4202,
     },
   },
