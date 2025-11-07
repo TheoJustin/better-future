@@ -6,8 +6,8 @@ import { useActiveAccount } from 'panna-sdk'
 
 import { QRScanLayout } from '@/components/qr/QRScanLayout'
 import { PaymentConfirmationLayout } from '@/components/payment/PaymentConfirmationLayout'
-import PaymentLoading from '@/components/bf/PaymentLoading'
-import PaymentSuccess from '@/components/bf/PaymentSuccess'
+import { PaymentLoadingLayout } from '@/components/payment/PaymentLoadingLayout'
+import { PaymentSuccessLayout } from '@/components/payment/PaymentSuccessLayout'
 import { useContract } from '@/hooks/useContract'
 import { getPlatformFee, calculatePlatformFee, calculateMerchantAmount } from '@/lib/contract'
 import { parseUnits, formatUnits } from '@/lib/utils-web3'
@@ -67,18 +67,23 @@ export default function QRScanPage() {
   function handleConfirmPayment() {
     setShowPaymentConfirmation(false)
     setShowPaymentLoading(true)
+    setPaymentProcessing(true)
   }
 
-  function handlePaymentConfirm() {
-    setPaymentProcessing(true)
-    // Here you would call the actual payment function
-    // For now, we'll simulate a payment process
-    setTimeout(() => {
-      setShowPaymentLoading(false)
-      setShowPaymentSuccess(true)
-      setPaymentProcessing(false)
-    }, 2000)
-  }
+  // Auto-process payment when loading screen is shown
+  useEffect(() => {
+    if (showPaymentLoading && paymentProcessing) {
+      // Here you would call the actual payment function
+      // For now, we'll simulate a payment process
+      const timer = setTimeout(() => {
+        setShowPaymentLoading(false)
+        setShowPaymentSuccess(true)
+        setPaymentProcessing(false)
+      }, 2000)
+
+      return () => clearTimeout(timer)
+    }
+  }, [showPaymentLoading, paymentProcessing])
 
   function handleBackToHome() {
     setShowPaymentSuccess(false)
@@ -121,8 +126,7 @@ export default function QRScanPage() {
   if (showPaymentLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <PaymentLoading
-          onPay={handlePaymentConfirm}
+        <PaymentLoadingLayout
           amount={extractedData?.amount?.toString()}
           merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : undefined}
         />
@@ -134,7 +138,7 @@ export default function QRScanPage() {
   if (showPaymentSuccess) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <PaymentSuccess
+        <PaymentSuccessLayout
           onBackToHome={handleBackToHome}
           userName={displayName}
           merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : 'Merchant'}
