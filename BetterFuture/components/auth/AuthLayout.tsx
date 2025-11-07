@@ -21,7 +21,7 @@ export function AuthLayout({
   return (
     <div
       className={cn(
-        'relative min-h-screen w-full max-w-[430px] mx-auto',
+        'relative w-[430px] h-[932px] mx-auto',
         'bg-white overflow-hidden rounded-[55px] shadow-2xl',
         className,
       )}
@@ -55,7 +55,3 @@ export function AuthLayout({
     </div>
   )
 }
-
-
-
-{/* <LoginButton chain={liskSepolia} /> */}
