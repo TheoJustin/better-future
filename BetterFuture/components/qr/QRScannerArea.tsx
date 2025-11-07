@@ -3,6 +3,7 @@
 import { useState, useRef } from 'react'
 import { QRScannerFrame, QRISLogo } from './QRScannerFrame'
 import { Loader2, Upload, CheckCircle2, AlertCircle } from 'lucide-react'
+import jsQR from 'jsqr'
 
 interface ExtractedData {
   address?: string
@@ -50,16 +51,51 @@ export function QRScannerArea({ onScanSuccess, onPaymentInitiate }: QRScannerAre
     setError(null)
 
     try {
+      // Create canvas and load image
+      const canvas = document.createElement('canvas')
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+
+      // Load image from base64
+      await new Promise((resolve, reject) => {
+        img.onload = resolve
+        img.onerror = reject
+        img.src = selectedImage
+      })
+
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx?.drawImage(img, 0, 0)
+
+      const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
+
+      if (!imageData) {
+        setError('Failed to process image')
+        setLoading(false)
+        return
+      }
+
+      // Scan QR code using jsQR
+      const code = jsQR(imageData.data, imageData.width, imageData.height)
+
+      if (!code) {
+        setError('No QR code found in image')
+        setLoading(false)
+        return
+      }
+
+      // Parse QR data via API route
       const response = await fetch('/api/scan-qr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: selectedImage }),
+        body: JSON.stringify({ qrText: code.data }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || 'Failed to scan QR code')
+        setError(data.error || 'Failed to parse QR code')
+        setLoading(false)
         return
       }
 
