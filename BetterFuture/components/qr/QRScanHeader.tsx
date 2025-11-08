@@ -20,7 +20,7 @@ export function QRScanHeader({ title = 'Pembayaran QRIS', onBack }: QRScanHeader
   }
 
   return (
-    <div className="absolute border-b-2 border-[#d9d9d9] box-border flex gap-6 items-center justify-center px-4 py-[11px] right-0 top-[59px] w-full max-w-[430px]">
+    <div className="absolute border-b-2 border-[#d9d9d9] box-border flex gap-6 items-center justify-center px-4 py-[11px] right-0 top-[59px] w-full">
       <button
         onClick={handleBack}
         className="relative shrink-0 size-[19.5px] flex items-center justify-center text-[#AFAFAF] hover:text-foreground transition-colors"

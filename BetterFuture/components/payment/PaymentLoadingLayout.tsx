@@ -19,17 +19,11 @@ export function PaymentLoadingLayout({
   return (
     <div
       className={cn(
-        'relative w-[430px] h-[932px] mx-auto',
+        'relative w-full max-w-[430px] min-h-screen h-screen max-h-[932px] mx-auto',
         'bg-white overflow-hidden rounded-[55px] shadow-2xl',
         className,
       )}
     >
-      {/* Control Bar */}
-      <div className="absolute bg-black h-[5px] left-[137px] rounded-[16px] top-[919px] w-[156px]" />
-
-      {/* Floating Island */}
-      <div className="absolute bg-black h-[37px] left-[152px] rounded-[23px] top-[11px] w-[126px]" />
-
       {/* Payment Loading Component */}
       <PaymentLoading {...loadingProps} />
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useActiveAccount } from 'panna-sdk'
 
@@ -42,12 +42,19 @@ export default function QRScanPage() {
   const [error, setError] = useState<string | null>(null)
   const [txHash, setTxHash] = useState<string>('')
 
+  const hasRedirected = useRef(false)
+
   // Redirect to login if not connected
   useEffect(() => {
+    // Prevent multiple redirects
+    if (hasRedirected.current) return
+
     if (!isConnected) {
-      router.push('/login')
+      hasRedirected.current = true
+      // Use window.location.replace to force redirect and prevent back navigation
+      window.location.replace('/login')
     }
-  }, [isConnected, router])
+  }, [isConnected])
 
   // Load platform fee and balance when component mounts
   useEffect(() => {
@@ -169,7 +176,7 @@ export default function QRScanPage() {
   // Show payment confirmation screen
   if (showPaymentConfirmation && extractedData) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4">
         <PaymentConfirmationLayout
           merchantAddress={extractedData.address}
           amount={extractedData.amount?.toString()}
@@ -181,7 +188,7 @@ export default function QRScanPage() {
         />
         {/* Error Display */}
         {error && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 max-w-[430px] w-full px-4 z-50">
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-full max-w-[calc(100%-2rem)] px-4 z-50">
             <div className="bg-red-500 text-white p-4 rounded-lg shadow-lg">
               <p className="text-sm font-medium">{error}</p>
             </div>
@@ -194,7 +201,7 @@ export default function QRScanPage() {
   // Show payment loading screen
   if (showPaymentLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4">
         <PaymentLoadingLayout
           amount={extractedData?.amount?.toString()}
           merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : undefined}
@@ -206,7 +213,7 @@ export default function QRScanPage() {
   // Show payment success screen
   if (showPaymentSuccess) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4">
         <PaymentSuccessLayout
           onBackToHome={handleBackToHome}
           userName={displayName}
@@ -218,7 +225,7 @@ export default function QRScanPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-2 sm:p-4">
       <QRScanLayout
         onBack={handleBack}
         onScanSuccess={handleScanSuccess}

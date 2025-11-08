@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { useActiveAccount } from 'panna-sdk';
 import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,12 +9,32 @@ import { Card } from '@/components/ui/card';
 import { Download, Copy, Check } from 'lucide-react';
 
 export default function QRGenerator() {
+  const activeAccount = useActiveAccount();
+  const isConnected = !!activeAccount;
+  const hasRedirected = useRef(false);
   const [inputValue, setInputValue] = useState(
     'ethereum:[PUBLIC_KEY]@4202?value=[PRICE]'
   );
   const [qrCode, setQrCode] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Redirect to login if not connected
+  useEffect(() => {
+    // Prevent multiple redirects
+    if (hasRedirected.current) return;
+
+    if (!isConnected) {
+      hasRedirected.current = true;
+      // Use window.location.replace to force redirect and prevent back navigation
+      window.location.replace('/login');
+    }
+  }, [isConnected]);
+
+  // Don't render if not connected
+  if (!isConnected) {
+    return null;
+  }
 
   useEffect(() => {
     generateQR(inputValue);

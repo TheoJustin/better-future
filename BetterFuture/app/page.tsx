@@ -1,6 +1,8 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { useActiveAccount } from 'panna-sdk';
 import { usePlants } from '@/hooks/usePlants';
 import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
 import BetterFutureHeader from '@/components/bf/BetterFutureHeader';
@@ -24,9 +26,29 @@ function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'qr-scanner';
+  const activeAccount = useActiveAccount();
+  const isConnected = !!activeAccount;
+  const hasRedirected = useRef(false);
   
   const { plants } = usePlants();
   const { isRunning } = usePlantStageScheduler();
+
+  // Redirect to login if not connected
+  useEffect(() => {
+    // Prevent multiple redirects
+    if (hasRedirected.current) return;
+
+    if (!isConnected) {
+      hasRedirected.current = true;
+      // Use window.location.replace to force redirect and prevent back navigation
+      window.location.replace('/login');
+    }
+  }, [isConnected]);
+
+  // Don't render if not connected
+  if (!isConnected) {
+    return null;
+  }
 
   const handleTabChange = (tabId: string) => {
     router.push(`/?tab=${tabId}`);
