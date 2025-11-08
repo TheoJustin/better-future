@@ -12,7 +12,7 @@ export function PaymentLoading({ onPay, amount, merchantName }: PaymentLoadingPr
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center">
       {/* Loading Content - Centered */}
-      <div className="absolute box-border flex flex-col gap-[11px] items-center left-1/2 p-0 top-1/2 translate-x-[-50%] translate-y-[-50%] w-[430px]">
+      <div className="absolute box-border flex flex-col gap-[11px] items-center left-1/2 p-0 top-1/2 translate-x-[-50%] translate-y-[-50%] w-full max-w-[430px] px-4">
         {/* Character Image */}
         <div className="h-[294px] relative shrink-0 w-full">
           <img

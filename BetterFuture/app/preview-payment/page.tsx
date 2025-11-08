@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useActiveAccount } from 'panna-sdk';
 import { Button } from '@/components/ui/button';
 import PaymentLoading from '@/components/bf/PaymentLoading';
 import PaymentSuccess from '@/components/bf/PaymentSuccess';
@@ -10,7 +11,27 @@ type Screen = 'selector' | 'loading' | 'success';
 
 export default function PreviewPaymentPage() {
   const router = useRouter();
+  const activeAccount = useActiveAccount();
+  const isConnected = !!activeAccount;
+  const hasRedirected = useRef(false);
   const [currentScreen, setCurrentScreen] = useState<Screen>('selector');
+
+  // Redirect to login if not connected
+  useEffect(() => {
+    // Prevent multiple redirects
+    if (hasRedirected.current) return;
+
+    if (!isConnected) {
+      hasRedirected.current = true;
+      // Use window.location.replace to force redirect and prevent back navigation
+      window.location.replace('/login');
+    }
+  }, [isConnected]);
+
+  // Don't render if not connected
+  if (!isConnected) {
+    return null;
+  }
 
   if (currentScreen === 'loading') {
     return (

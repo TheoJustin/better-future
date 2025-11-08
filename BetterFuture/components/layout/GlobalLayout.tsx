@@ -48,20 +48,14 @@ export function GlobalLayout({
   return (
     <div
       className={cn(
-        'relative w-[430px] h-[932px] mx-auto',
+        'relative w-full max-w-[430px] min-h-screen h-screen max-h-[932px] mx-auto',
         'bg-white overflow-hidden rounded-[55px] shadow-2xl',
         className,
       )}
     >
-      {/* Control Bar */}
-      <div className="absolute bg-black h-[5px] left-[137px] rounded-[16px] top-[919px] w-[156px]" />
-
-      {/* Floating Island */}
-      <div className="absolute bg-black h-[37px] left-[152px] rounded-[23px] top-[11px] w-[126px]" />
-
       {/* Header */}
       {header && (
-        <div className="absolute border-b-2 border-[#d9d9d9] box-border flex gap-6 items-center justify-center px-4 py-[11px] right-0 top-[59px] w-full max-w-[430px] z-10">
+        <div className="absolute border-b-2 border-[#d9d9d9] box-border flex gap-6 items-center justify-center px-4 py-[11px] right-0 top-[59px] w-full z-10">
           {/* Back Button */}
           {header.showBack !== false && (
             <button
@@ -111,7 +105,7 @@ export function GlobalLayout({
 
       {/* Bottom Navigation */}
       {bottomNav && (
-        <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 h-[181px] left-1/2 translate-x-[-50%] w-full max-w-[430px] z-10">
+        <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 h-[181px] left-1/2 translate-x-[-50%] w-full z-10">
           {bottomNav}
         </div>
       )}

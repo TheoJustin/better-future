@@ -31,17 +31,11 @@ export function QRScanLayout({
   return (
     <div
       className={cn(
-        'relative w-[430px] h-[932px] mx-auto',
+        'relative w-full max-w-[430px] min-h-screen h-screen max-h-[932px] mx-auto',
         'bg-white overflow-hidden rounded-[55px] shadow-2xl',
         className,
       )}
     >
-      {/* Control Bar */}
-      <div className="absolute bg-black h-[5px] left-[137px] rounded-[16px] top-[919px] w-[156px]" />
-
-      {/* Floating Island */}
-      <div className="absolute bg-black h-[37px] left-[152px] rounded-[23px] top-[11px] w-[126px]" />
-
       {/* Header */}
       <QRScanHeader onBack={onBack} />
 
@@ -52,7 +46,7 @@ export function QRScanLayout({
       />
 
       {/* Bottom Nav */}
-      <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 h-[181px] left-1/2 translate-x-[-50%] w-full max-w-[430px]" />
+      <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 h-[181px] left-1/2 translate-x-[-50%] w-full" />
 
       {/* Additional children content */}
       {children}

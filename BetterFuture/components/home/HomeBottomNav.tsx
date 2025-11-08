@@ -35,7 +35,7 @@ export function HomeBottomNav({
   }
 
   return (
-    <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 box-border flex items-center justify-between left-1/2 pb-[50px] pt-6 px-6 translate-x-[-50%] w-full max-w-[430px] gap-4">
+    <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 box-border flex items-center justify-between left-1/2 pb-[50px] pt-6 px-6 translate-x-[-50%] w-full gap-4">
       {/* QR Scanner Button */}
       <button
         onClick={handleQRClick}

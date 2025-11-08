@@ -25,9 +25,9 @@ export function PaymentSuccess({
 
       {/* Content Area */}
       <div className="absolute top-[113px] bottom-[181px] left-0 right-0 overflow-y-auto">
-        <div className="flex flex-col gap-4 items-center left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] w-[430px] absolute">
+        <div className="flex flex-col gap-4 items-center left-1/2 top-1/2 translate-x-[-50%] translate-y-[-50%] w-full max-w-[430px] px-4 absolute">
           {/* Success Character Image */}
-          <div className="h-[399px] relative shrink-0 w-[430px]">
+          <div className="h-[399px] relative shrink-0 w-full max-w-[430px]">
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               <img
                 alt="Success"
@@ -47,7 +47,7 @@ export function PaymentSuccess({
       </div>
 
       {/* Bottom Navigation */}
-      <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 box-border flex items-center justify-between left-1/2 pb-[50px] pt-6 px-6 translate-x-[-50%] w-full max-w-[430px]">
+      <div className="absolute bg-white border border-[#afafaf] border-solid bottom-0 box-border flex items-center justify-between left-1/2 pb-[50px] pt-6 px-6 translate-x-[-50%] w-full">
         <AuthButton
           type="button"
           onClick={onBackToHome}

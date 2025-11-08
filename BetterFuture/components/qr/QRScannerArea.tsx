@@ -113,7 +113,7 @@ export function QRScannerArea({ onScanSuccess, onPaymentInitiate }: QRScannerAre
     extractedData?.valid && extractedData?.address && extractedData?.amount
 
   return (
-    <div className="absolute bg-[#4b4b4b] box-border flex flex-col gap-3 h-[730px] items-center justify-center left-1/2 p-2.5 top-[calc(50%+12px)] translate-x-[-50%] translate-y-[-50%] w-full max-w-[430px]">
+    <div className="absolute bg-[#4b4b4b] box-border flex flex-col gap-3 h-[730px] items-center justify-center left-1/2 p-2.5 top-[calc(50%+12px)] translate-x-[-50%] translate-y-[-50%] w-full">
       <div className="flex flex-col font-black justify-center leading-normal relative shrink-0 text-[36px] text-white tracking-[-0.72px] whitespace-nowrap mb-2">
         <p className="mb-0">Arahkan ke Kode Qris</p>
       </div>
