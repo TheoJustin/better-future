@@ -1,0 +1,26 @@
+{
+  "name": "Better Future - Web3 Payment System",
+  "short_name": "Better Future",
+  "description": "Secure IDR stablecoin payments with QR codes and NFT receipts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4F46E5",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["finance", "utilities", "productivity"],
+  "lang": "en",
+  "dir": "ltr"
+}
