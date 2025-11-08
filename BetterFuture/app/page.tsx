@@ -10,6 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Receipt, Settings, Info } from 'lucide-react';
 import QRGenerator from './qr-generate/page';
+import { Suspense } from 'react';
 import MenuPage from './menu/page';
 
 const tabs = [
@@ -19,7 +20,7 @@ const tabs = [
   { id: 'menu', label: 'Menu' },
 ];
 
-export default function Home() {
+function HomeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'qr-scanner';
@@ -105,5 +106,13 @@ export default function Home() {
 
       {renderTabContent()}
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
