@@ -48,9 +48,9 @@ export default function HistoryPage() {
         }}
         bottomNav={
           <div className="flex items-center justify-between gap-4 px-6 pb-[50px] pt-6 w-full">
-            <AuthButton onClick={handleDeposit} className="flex-1">
+            {/* <AuthButton onClick={handleDeposit} className="flex-1">
               Masukan koin
-            </AuthButton>
+            </AuthButton> */}
             <AuthButton onClick={handleBackToHome} className="flex-1">
               Balik ke home
             </AuthButton>
