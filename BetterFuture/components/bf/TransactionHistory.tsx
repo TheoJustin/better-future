@@ -85,54 +85,59 @@ export default function TransactionHistory() {
 
   if (!client || !account) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4">
-        <Card className="w-full max-w-md p-6 text-center">
-          <p className="text-muted-foreground">Please connect your wallet to view transaction history</p>
+      <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+        <Card className="w-full max-w-md p-6 text-center bg-white border border-[#afafaf]">
+          <p className="text-[#4b4b4b]/70">Please connect your wallet to view transaction history</p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-2xl">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-white">
+      <Card className="w-full max-w-2xl bg-white border border-[#afafaf]">
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Transaction History</h1>
-            <Button onClick={loadTransactions} disabled={loading} size="sm">
+            <h1 className="text-2xl font-bold text-[#4b4b4b]">Transaction History</h1>
+            <Button 
+              onClick={loadTransactions} 
+              disabled={loading} 
+              size="sm"
+              className="bg-[#1899d6] hover:bg-[#1cb0f6] text-white"
+            >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
             </Button>
           </div>
 
           {loading && transactions.length === 0 ? (
             <div className="text-center py-8">
-              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
-              <p className="text-muted-foreground">Loading transactions...</p>
+              <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-[#1899d6]" />
+              <p className="text-[#4b4b4b]/70">Loading transactions...</p>
             </div>
           ) : transactions.length === 0 ? (
             <div className="text-center py-8">
-              <Receipt className="w-8 h-8 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">No transactions found</p>
+              <Receipt className="w-8 h-8 mx-auto mb-4 text-[#4b4b4b]/70" />
+              <p className="text-[#4b4b4b]/70">No transactions found</p>
             </div>
           ) : (
             <div className="space-y-3">
               {transactions.map((tx) => (
-                <Card key={tx.tokenId} className="p-4">
+                <Card key={tx.tokenId} className="p-4 bg-white border border-[#afafaf] hover:border-[#1899d6] transition-colors">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <Receipt className="w-4 h-4 text-primary" />
-                        <span className="font-semibold">Payment to {formatAddress(tx.merchant)}</span>
+                        <Receipt className="w-4 h-4 text-[#1899d6]" />
+                        <span className="font-semibold text-[#4b4b4b]">Payment to {formatAddress(tx.merchant)}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-[#4b4b4b]/70">
                         {formatDate(tx.timestamp)}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-[#4b4b4b]/70">
                         Receipt NFT #{tx.tokenId}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-lg">{tx.amount} IDR</p>
+                      <p className="font-semibold text-lg text-[#4b4b4b]">{tx.amount} IDR</p>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -140,6 +145,7 @@ export default function TransactionHistory() {
                           setSelectedTransaction(tx);
                           setShowDetailsModal(true);
                         }}
+                        className="text-[#1899d6] hover:text-[#1cb0f6] hover:bg-[#1899d6]/5"
                       >
                         <ExternalLink className="w-3 h-3 mr-1" />
                         Details

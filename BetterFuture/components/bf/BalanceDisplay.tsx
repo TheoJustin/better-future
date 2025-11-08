@@ -39,13 +39,13 @@ export default function BalanceDisplay() {
 
   return (
     <>
-      <Card className="p-4">
+      <Card className="p-4 bg-white border border-[#afafaf]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-primary" />
+            <Wallet className="w-5 h-5 text-[#1899d6]" />
             <div>
-              <p className="text-sm text-muted-foreground">IDR Balance</p>
-              <p className="text-lg font-semibold">{formatUnits(balance, 18)} IDR</p>
+              <p className="text-sm text-[#4b4b4b]/70">IDR Balance</p>
+              <p className="text-lg font-semibold text-[#4b4b4b]">{formatUnits(balance, 18)} IDR</p>
             </div>
           </div>
           <div className="flex gap-1">
@@ -53,6 +53,7 @@ export default function BalanceDisplay() {
               variant="ghost"
               size="sm"
               onClick={() => setShowDepositModal(true)}
+              className="text-[#1899d6] hover:text-[#1cb0f6] hover:bg-[#1899d6]/5"
             >
               <Plus className="w-4 h-4" />
             </Button>
@@ -61,6 +62,7 @@ export default function BalanceDisplay() {
               size="sm"
               onClick={loadBalance}
               disabled={loading}
+              className="text-[#1899d6] hover:text-[#1cb0f6] hover:bg-[#1899d6]/5"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>

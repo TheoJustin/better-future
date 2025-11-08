@@ -167,17 +167,17 @@ export default function QRCodeScanner() {
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-4">
+    <main className="flex items-center justify-center min-h-screen p-4 bg-white">
       <div className="max-w-md mx-auto px-4 py-8 space-y-4">
         <BalanceDisplay />
-        <Card className="w-full">
+        <Card className="w-full bg-white border border-[#afafaf]">
         <div className="p-6 space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">
+            <h1 className="text-2xl font-bold text-[#4b4b4b] mb-2">
               QR Code Scanner
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-[#4b4b4b]/70">
               Upload an image to scan for QR codes and extract address & amount
             </p>
           </div>
@@ -193,7 +193,7 @@ export default function QRCodeScanner() {
             />
 
             {selectedImage ? (
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-border">
+              <div className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-[#afafaf]">
                 <img
                   src={selectedImage || '/placeholder.svg'}
                   alt="Selected QR code"
@@ -203,10 +203,10 @@ export default function QRCodeScanner() {
             ) : (
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full aspect-square rounded-lg border-2 border-dashed border-border bg-card hover:bg-secondary transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer"
+                className="w-full aspect-square rounded-lg border-2 border-dashed border-[#afafaf] bg-white hover:bg-[#1899d6]/5 transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer"
               >
-                <Upload className="w-8 h-8 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">
+                <Upload className="w-8 h-8 text-[#4b4b4b]/70" />
+                <span className="text-sm font-medium text-[#4b4b4b]/70">
                   Click to upload image
                 </span>
               </button>
@@ -221,7 +221,7 @@ export default function QRCodeScanner() {
                   setExtractedData(null);
                   if (fileInputRef.current) fileInputRef.current.value = '';
                 }}
-                className="w-full"
+                className="w-full border-[#afafaf] text-[#4b4b4b] hover:bg-[#1899d6]/5"
               >
                 Change Image
               </Button>
@@ -233,7 +233,7 @@ export default function QRCodeScanner() {
             onClick={handleScanQR}
             disabled={!selectedImage || loading}
             size="lg"
-            className="w-full"
+            className="w-full bg-[#1899d6] hover:bg-[#1cb0f6] text-white"
           >
             {loading ? (
               <>
@@ -247,27 +247,27 @@ export default function QRCodeScanner() {
 
           {/* Error State */}
           {error && (
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex gap-2">
-              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
-              <p className="text-sm text-destructive">{error}</p>
+            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/50 flex gap-2">
+              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
           {/* Results Section */}
           {extractedData && (
-            <div className="space-y-3 pt-3 border-t border-border">
+            <div className="space-y-3 pt-3 border-t border-[#afafaf]">
               <div className="space-y-2">
                 {extractedData.valid ? (
-                  <div className="flex gap-2 items-start p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                  <div className="flex gap-2 items-start p-2 bg-green-500/10 rounded-lg border border-green-500/50">
+                    <CheckCircle2 className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+                    <p className="text-sm font-medium text-green-700">
                       Valid QR code detected!
                     </p>
                   </div>
                 ) : (
-                  <div className="flex gap-2 items-start p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                    <p className="text-sm text-amber-700 dark:text-amber-300">
+                  <div className="flex gap-2 items-start p-2 bg-amber-500/10 rounded-lg border border-amber-500/50">
+                    <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                    <p className="text-sm text-amber-700">
                       {extractedData.error || 'Could not extract complete data'}
                     </p>
                   </div>
@@ -276,10 +276,10 @@ export default function QRCodeScanner() {
 
               {/* JSON Output */}
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">
+                <label className="text-sm font-semibold text-[#4b4b4b]">
                   Extracted Data (JSON):
                 </label>
-                <pre className="p-3 bg-card border border-border rounded-lg text-xs overflow-auto max-h-40 text-foreground">
+                <pre className="p-3 bg-white border border-[#afafaf] rounded-lg text-xs overflow-auto max-h-40 text-[#4b4b4b]">
                   {JSON.stringify(
                     {
                       address: extractedData.address || null,
@@ -294,11 +294,11 @@ export default function QRCodeScanner() {
 
               {/* IDR Payment Info */}
               {canSendETH && (
-                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg space-y-2">
-                  <p className="text-sm font-semibold text-foreground">
+                <div className="p-3 bg-[#1899d6]/10 border border-[#1899d6]/20 rounded-lg space-y-2">
+                  <p className="text-sm font-semibold text-[#4b4b4b]">
                     Ready to send IDR:
                   </p>
-                  <div className="space-y-1 text-xs text-muted-foreground">
+                  <div className="space-y-1 text-xs text-[#4b4b4b]/70">
                     <p>
                       <span className="font-medium">Merchant:</span>{' '}
                       {extractedData.address}
@@ -309,7 +309,7 @@ export default function QRCodeScanner() {
                     </p>
                   </div>
                   <Button
-                    className="w-full mt-2"
+                    className="w-full mt-2 bg-[#1899d6] hover:bg-[#1cb0f6] text-white"
                     onClick={() => setShowPaymentModal(true)}
                   >
                     Pay with IDR

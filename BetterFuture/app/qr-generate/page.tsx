@@ -64,23 +64,23 @@ export default function QRGenerator() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-12">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 py-12 bg-white">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground">
+          <h1 className="text-4xl font-bold tracking-tight text-[#4b4b4b]">
             QR Generator
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-[#4b4b4b]/70">
             Convert any text or URL into a QR code instantly
           </p>
         </div>
 
         {/* Input Card */}
-        <Card className="p-6 border border-border bg-card">
+        <Card className="p-6 border border-[#afafaf] bg-white">
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">
+              <label className="text-sm font-medium text-[#4b4b4b] mb-2 block">
                 Enter text or URL
               </label>
               <Input
@@ -88,13 +88,13 @@ export default function QRGenerator() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="ethereum:[PUBLIC_KEY]@4202?value=[PRICE]"
-                className="w-full"
+                className="w-full border-[#afafaf] focus:border-[#1899d6] focus:ring-[#1899d6]"
               />
             </div>
 
             {/* QR Code Preview */}
             {qrCode && (
-              <div className="flex flex-col items-center justify-center p-6 bg-background rounded-lg border border-border">
+              <div className="flex flex-col items-center justify-center p-6 bg-white rounded-lg border border-[#afafaf]">
                 <img
                   src={qrCode || '/placeholder.svg'}
                   alt="QR Code"
@@ -108,7 +108,7 @@ export default function QRGenerator() {
               <Button
                 onClick={handleDownload}
                 disabled={!qrCode}
-                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="flex-1 bg-[#1899d6] text-white hover:bg-[#1cb0f6]"
                 size="lg"
               >
                 <Download className="w-4 h-4 mr-2" />
@@ -118,7 +118,7 @@ export default function QRGenerator() {
                 onClick={handleCopy}
                 disabled={!qrCode}
                 variant="outline"
-                className="flex-1 bg-transparent"
+                className="flex-1 bg-transparent border-[#afafaf] text-[#4b4b4b] hover:bg-[#1899d6]/5 hover:border-[#1899d6]"
                 size="lg"
               >
                 {copied ? (
@@ -138,7 +138,7 @@ export default function QRGenerator() {
         </Card>
 
         {/* Info */}
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="text-center text-sm text-[#4b4b4b]/70">
           <p>Secure • No data stored • Works offline</p>
         </div>
       </div>

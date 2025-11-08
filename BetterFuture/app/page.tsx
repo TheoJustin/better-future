@@ -96,7 +96,7 @@ function HomeContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <BetterFutureHeader 
         schedulerRunning={isRunning}
         tabs={tabs}
@@ -104,7 +104,9 @@ function HomeContent() {
         onTabChange={handleTabChange}
       />
 
-      {renderTabContent()}
+      <div className="bg-white">
+        {renderTabContent()}
+      </div>
     </div>
   );
 }
