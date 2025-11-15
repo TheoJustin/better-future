@@ -35,7 +35,8 @@ function HomeContent() {
   const { plants } = usePlants();
   const { isRunning } = usePlantStageScheduler();
 
-  // Redirect mobile users to login, allow web users to access home directly
+  // Mobile: redirect to /login if not connected, /home if connected
+  // Web: allow access to root page
   useEffect(() => {
     // Prevent multiple redirects
     if (hasRedirected.current) return;
@@ -43,15 +44,18 @@ function HomeContent() {
     // Wait for mobile detection to complete
     if (isMobile === undefined) return;
 
-    if (isMobile && !isConnected) {
+    if (isMobile) {
       hasRedirected.current = true;
-      // Use window.location.replace to force redirect and prevent back navigation
-      window.location.replace('/login');
+      if (isConnected) {
+        window.location.replace('/home');
+      } else {
+        window.location.replace('/login');
+      }
     }
   }, [isConnected, isMobile]);
 
-  // Don't render if mobile and not connected
-  if (isMobile && !isConnected) {
+  // Don't render if mobile (will redirect)
+  if (isMobile) {
     return null;
   }
   
