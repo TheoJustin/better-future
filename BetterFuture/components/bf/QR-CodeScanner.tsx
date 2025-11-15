@@ -171,7 +171,7 @@ export default function QRCodeScanner() {
   return (
     <main
       className="flex items-center justify-center min-h-screen p-4"
-      style={{ backgroundColor: '#EAF4FF' }}
+      style={{ backgroundColor: '#EDF2FF' }}
     >
       <div className="max-w-md mx-auto px-4 py-8 space-y-4">
         <BalanceDisplay />

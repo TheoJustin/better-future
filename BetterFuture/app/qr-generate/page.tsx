@@ -87,7 +87,7 @@ export default function QRGenerator() {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen px-4 py-12"
-      style={{ backgroundColor: '#FFFFFF' }}
+      style={{ backgroundColor: '#EDF2FF' }}
     >
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
