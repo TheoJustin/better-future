@@ -48,7 +48,7 @@ export function CoinDisplay({ coinAmount, coinImage = imgImage18 }: CoinDisplayP
   // Use balance from wallet if available, otherwise use prop or default
   const displayAmount = coinAmount !== undefined 
     ? coinAmount 
-    : 4
+    : parseFloat(formatUnits(balance, 18))
 
   // Format amount to show 1 decimal place (e.g., 4.9)
   const formatCoinAmount = (amount: number): string => {
