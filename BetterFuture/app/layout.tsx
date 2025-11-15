@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Nunito } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { Providers } from '@/components/garden/providers';
 import './globals.css';
 
 const _geist = Geist({ subsets: ['latin'] });
 const _geistMono = Geist_Mono({ subsets: ['latin'] });
+const nunito = Nunito({ 
+  subsets: ['latin'],
+  weight: ['700', '800'],
+  variable: '--font-nunito'
+});
 
 export const metadata: Metadata = {
   title: 'Better Future - Web3 Payment System',
@@ -53,7 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`font-sans antialiased`}>
+      <body className={`font-sans antialiased ${nunito.variable}`}>
         <Providers>{children}</Providers>
         <Analytics />
       </body>

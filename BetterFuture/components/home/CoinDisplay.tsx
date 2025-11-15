@@ -48,7 +48,7 @@ export function CoinDisplay({ coinAmount, coinImage = imgImage18 }: CoinDisplayP
   // Use balance from wallet if available, otherwise use prop or default
   const displayAmount = coinAmount !== undefined 
     ? coinAmount 
-    : Number(formatUnits(balance, 18))
+    : 4
 
   // Format amount to show 1 decimal place (e.g., 4.9)
   const formatCoinAmount = (amount: number): string => {
@@ -60,18 +60,18 @@ export function CoinDisplay({ coinAmount, coinImage = imgImage18 }: CoinDisplayP
 
   return (
     <div className="absolute box-border flex flex-col gap-3 items-center justify-center left-1/2 p-2.5 top-1/2 translate-x-[-50%] translate-y-[-50%]">
-      <div className="flex flex-col font-black justify-center leading-[100%] relative shrink-0 text-[36px] text-black tracking-[-0.72px] whitespace-nowrap">
-        <p className="leading-normal">Jumlah Koin {userName}</p>
+      <div className="flex flex-col justify-center leading-[100%] relative shrink-0 text-[36px] text-black tracking-[-0.72px] whitespace-nowrap">
+        <p className="leading-normal font-nunito font-bold">Jumlah Koin {userName}</p>
       </div>
-      <div className="h-[242px] relative shrink-0 w-[354px]">
+      <div className="h-[120px] relative shrink-0 w-[180px]">
         <img
           alt="Coin"
           className="absolute inset-0 max-w-none object-cover object-center pointer-events-none size-full"
           src={coinImage}
         />
       </div>
-      <div className="flex flex-col font-black justify-center leading-[100%] relative shrink-0 text-[64px] text-black tracking-[-1.28px] whitespace-nowrap">
-        <p className="leading-normal">
+      <div className="flex flex-col justify-center leading-[100%] relative shrink-0 text-[64px] text-black tracking-[-1.28px] whitespace-nowrap">
+        <p className="leading-normal font-nunito font-extrabold">
           {formatCoinAmount(displayAmount)} Koin
         </p>
       </div>

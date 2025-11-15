@@ -52,7 +52,7 @@ const MenuPage = () => {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-semibold">
-                HAI {displayName.toUpperCase()}
+                HI {displayName.toUpperCase()}
               </h2>
             </div>
 
@@ -73,7 +73,7 @@ const MenuPage = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-8">
               <h3 className="text-2xl font-bold text-foreground">
-                Jumlah Koin {displayName}
+                Jumlah Koin
               </h3>
               <Button
                 variant="ghost"
