@@ -50,11 +50,9 @@ const MenuPage = () => {
         {/* Greeting Card */}
         <Card className="bg-cyan-500 text-white p-4 shadow-lg">
           <div className="flex items-center justify-between">
-            <div>
               <h2 className="text-lg font-semibold">
                 HI {displayName.toUpperCase()}
               </h2>
-            </div>
 
             <div className="w-1 h-8 bg-white mx-4"></div>
 
