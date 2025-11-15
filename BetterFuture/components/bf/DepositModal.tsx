@@ -53,27 +53,28 @@ export default function DepositModal({ isOpen, onClose, onSuccess }: DepositModa
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" style={{ zIndex: 9999, backgroundColor: '#FFFFFF' }}>
         <DialogHeader>
-          <DialogTitle>Deposit IDR</DialogTitle>
+          <DialogTitle style={{ color: '#1A1A3E' }}>Deposit IDR</DialogTitle>
         </DialogHeader>
 
         {!success ? (
           <div className="space-y-4">
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-700 dark:text-blue-300">
+              <p className="text-sm text-black">
                 <strong>Exchange Rate:</strong> 1 ETH = 1000 IDR
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (IDR)</Label>
+              <Label htmlFor="amount" style={{ color: '#1A1A3E' }}>Amount (IDR)</Label>
               <Input
                 id="amount"
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="100.00"
+                style={{ backgroundColor: '#F5F5F7', color: '#1A1A3E' }}
               />
             </div>
 
@@ -90,13 +91,14 @@ export default function DepositModal({ isOpen, onClose, onSuccess }: DepositModa
             )}
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleClose} className="flex-1">
+              <Button variant="outline" onClick={handleClose} className="flex-1" style={{ borderColor: '#4DA6FF', color: '#4DA6FF' }}>
                 Cancel
               </Button>
               <Button 
                 onClick={handleDeposit} 
                 disabled={!amount || loading || !client}
                 className="flex-1"
+                style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}
               >
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Deposit ETH'}
               </Button>
@@ -109,7 +111,7 @@ export default function DepositModal({ isOpen, onClose, onSuccess }: DepositModa
             <p className="text-sm text-muted-foreground">
               Successfully deposited {amount ? (parseFloat(amount) / 1000).toFixed(4) : '0'} ETH for {amount} IDR!
             </p>
-            <Button onClick={handleClose} className="w-full">
+            <Button onClick={handleClose} className="w-full" style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}>
               Close
             </Button>
           </div>

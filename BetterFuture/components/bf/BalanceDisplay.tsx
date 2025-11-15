@@ -11,7 +11,7 @@ import DepositModal from './DepositModal';
 
 export default function BalanceDisplay() {
   const { client, account } = useContract();
-  const [balance, setBalance] = useState<bigint>(0n);
+  const [balance, setBalance] = useState<bigint>(BigInt(0));
   const [loading, setLoading] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
 
@@ -39,13 +39,15 @@ export default function BalanceDisplay() {
 
   return (
     <>
-      <Card className="p-4">
+      <Card className="p-4" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Wallet className="w-5 h-5 text-primary" />
-            <div>
-              <p className="text-sm text-muted-foreground">IDR Balance</p>
-              <p className="text-lg font-semibold">{formatUnits(balance, 18)} IDR</p>
+            <div className="text-black">
+              <p className="text-sm text-black">IDR Balance</p>
+              <p className="text-lg font-semibold text-black">
+                {formatUnits(balance, 18)} IDR
+              </p>
             </div>
           </div>
           <div className="flex gap-1">
@@ -62,12 +64,14 @@ export default function BalanceDisplay() {
               onClick={loadBalance}
               disabled={loading}
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
+              />
             </Button>
           </div>
         </div>
       </Card>
-      
+
       <DepositModal
         isOpen={showDepositModal}
         onClose={() => setShowDepositModal(false)}

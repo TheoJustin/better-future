@@ -20,7 +20,8 @@ export default function TransactionHistory() {
   const { client, account } = useContract();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const loadTransactions = async () => {
@@ -30,11 +31,11 @@ export default function TransactionHistory() {
     try {
       const balance = await getReceiptBalance(client, account.address);
       const receiptCount = Number(balance);
-      
+
       const transactionPromises = [];
       for (let i = 1; i <= receiptCount; i++) {
         transactionPromises.push(
-          getReceiptTokenURI(client, BigInt(i)).then(uri => {
+          getReceiptTokenURI(client, BigInt(i)).then((uri) => {
             try {
               const data = JSON.parse(uri);
               return {
@@ -42,7 +43,7 @@ export default function TransactionHistory() {
                 merchant: data.merchant,
                 amount: data.amount,
                 timestamp: data.timestamp,
-                buyer: data.buyer
+                buyer: data.buyer,
               };
             } catch {
               return null;
@@ -53,10 +54,9 @@ export default function TransactionHistory() {
 
       const results = await Promise.all(transactionPromises);
       const validTransactions = results.filter(Boolean) as Transaction[];
-      
-      // Sort by timestamp (newest first)
+
       validTransactions.sort((a, b) => b.timestamp - a.timestamp);
-      
+
       setTransactions(validTransactions);
     } catch (error) {
       console.error('Error loading transactions:', error);
@@ -79,28 +79,47 @@ export default function TransactionHistory() {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   if (!client || !account) {
     return (
-      <div className="flex items-center justify-center min-h-screen p-4">
+      <div
+        className="flex items-center justify-center min-h-screen p-4"
+        style={{ backgroundColor: '#F5F5F7' }}
+      >
         <Card className="w-full max-w-md p-6 text-center">
-          <p className="text-muted-foreground">Please connect your wallet to view transaction history</p>
+          <p className="text-muted-foreground">
+            Please connect your wallet to view transaction history
+          </p>
         </Card>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-2xl">
+    <div
+      className="flex items-center justify-center min-h-screen p-4"
+      style={{ backgroundColor: '#F5F5F7' }}
+    >
+      <Card className="w-full max-w-2xl" style={{ backgroundColor: '#FFFFFF' }}>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Transaction History</h1>
-            <Button onClick={loadTransactions} disabled={loading} size="sm">
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Refresh'}
+            <h1 className="text-2xl font-bold" style={{ color: '#1A1A3E' }}>
+              Transaction History
+            </h1>
+            <Button
+              onClick={loadTransactions}
+              disabled={loading}
+              size="sm"
+              style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                'Refresh'
+              )}
             </Button>
           </div>
 
@@ -121,8 +140,16 @@ export default function TransactionHistory() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <Receipt className="w-4 h-4 text-primary" />
-                        <span className="font-semibold">Payment to {formatAddress(tx.merchant)}</span>
+                        <Receipt
+                          className="w-4 h-4"
+                          style={{ color: '#4DA6FF' }}
+                        />
+                        <span
+                          className="font-semibold"
+                          style={{ color: '#1A1A3E' }}
+                        >
+                          Payment to {formatAddress(tx.merchant)}
+                        </span>
                       </div>
                       <p className="text-sm text-muted-foreground">
                         {formatDate(tx.timestamp)}
@@ -132,7 +159,12 @@ export default function TransactionHistory() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-lg">{tx.amount} IDR</p>
+                      <p
+                        className="font-semibold text-lg"
+                        style={{ color: '#1A1A3E' }}
+                      >
+                        {tx.amount} IDR
+                      </p>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -152,7 +184,7 @@ export default function TransactionHistory() {
           )}
         </div>
       </Card>
-      
+
       <TransactionDetailsModal
         isOpen={showDetailsModal}
         onClose={() => setShowDetailsModal(false)}

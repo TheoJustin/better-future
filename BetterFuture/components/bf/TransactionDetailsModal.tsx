@@ -36,34 +36,34 @@ export default function TransactionDetailsModal({ isOpen, onClose, transaction }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" style={{ zIndex: 9999, backgroundColor: '#FFFFFF' }}>
         <DialogHeader>
-          <DialogTitle>Transaction Details</DialogTitle>
+          <DialogTitle style={{ color: '#1A1A3E' }}>Transaction Details</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
-          <Card className="p-4 space-y-3">
+          <Card className="p-4 space-y-3" style={{ backgroundColor: '#F5F5F7' }}>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Receipt NFT ID</span>
-              <span className="font-mono">#{transaction.tokenId}</span>
+              <span className="font-mono" style={{ color: '#1A1A3E' }}>#{transaction.tokenId}</span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Amount</span>
-              <span className="font-semibold text-lg">{transaction.amount} IDR</span>
+              <span className="font-semibold text-lg" style={{ color: '#1A1A3E' }}>{transaction.amount} IDR</span>
             </div>
 
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Date</span>
-              <span>{new Date(transaction.timestamp).toLocaleString()}</span>
+              <span style={{ color: '#1A1A3E' }}>{new Date(transaction.timestamp).toLocaleString()}</span>
             </div>
           </Card>
 
-          <Card className="p-4 space-y-3">
+          <Card className="p-4 space-y-3" style={{ backgroundColor: '#F5F5F7' }}>
             <div className="space-y-2">
               <span className="text-sm text-muted-foreground">Merchant Address</span>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-sm">{formatAddress(transaction.merchant)}</span>
+                <span className="font-mono text-sm" style={{ color: '#1A1A3E' }}>{formatAddress(transaction.merchant)}</span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -84,7 +84,7 @@ export default function TransactionDetailsModal({ isOpen, onClose, transaction }
             <div className="space-y-2">
               <span className="text-sm text-muted-foreground">Buyer Address</span>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-sm">{formatAddress(transaction.buyer)}</span>
+                <span className="font-mono text-sm" style={{ color: '#1A1A3E' }}>{formatAddress(transaction.buyer)}</span>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -103,7 +103,7 @@ export default function TransactionDetailsModal({ isOpen, onClose, transaction }
             </div>
           </Card>
 
-          <Button onClick={onClose} className="w-full">
+          <Button onClick={onClose} className="w-full" style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}>
             Close
           </Button>
         </div>

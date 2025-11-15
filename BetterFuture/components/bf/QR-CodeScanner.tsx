@@ -40,7 +40,6 @@ export default function QRCodeScanner() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file is an image
     if (!file.type.startsWith('image/')) {
       setError('Please select an image file');
       return;
@@ -63,50 +62,47 @@ export default function QRCodeScanner() {
     setError(null);
 
     try {
-      // Create canvas and load image
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
-      
+
       await new Promise((resolve, reject) => {
         img.onload = resolve;
         img.onerror = reject;
         img.src = selectedImage;
       });
-      
+
       canvas.width = img.width;
       canvas.height = img.height;
       ctx?.drawImage(img, 0, 0);
-      
+
       const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
-      
+
       if (!imageData) {
         setError('Failed to process image');
         return;
       }
-      
-      // Scan QR code
+
       const code = jsQR(imageData.data, imageData.width, imageData.height);
-      
+
       if (!code) {
         setError('No QR code found in image');
         return;
       }
-      
-      // Parse QR data via API
+
       const response = await fetch('/api/scan-qr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ qrText: code.data }),
       });
-      
+
       const data = await response.json();
-      
+
       if (!response.ok) {
         setError(data.error || 'Failed to parse QR code');
         return;
       }
-      
+
       setExtractedData(data);
     } catch (err) {
       console.error('QR scan error:', err);
@@ -120,7 +116,9 @@ export default function QRCodeScanner() {
     extractedData?.valid && extractedData?.address && extractedData?.amount;
 
   const displayName = activeAccount?.address
-    ? `${activeAccount.address.slice(0, 4)}...${activeAccount.address.slice(-4)}`
+    ? `${activeAccount.address.slice(0, 4)}...${activeAccount.address.slice(
+        -4
+      )}`
     : 'User';
 
   const handleInitiatePayment = () => {
@@ -129,8 +127,6 @@ export default function QRCodeScanner() {
 
   const handlePaymentConfirm = async () => {
     setPaymentProcessing(true);
-    // Here you would call the actual payment function
-    // For now, we'll simulate a payment process
     setTimeout(() => {
       setShowPaymentLoading(false);
       setShowPaymentSuccess(true);
@@ -143,184 +139,197 @@ export default function QRCodeScanner() {
     router.push('/menu');
   };
 
-  // Show payment loading screen
   if (showPaymentLoading) {
     return (
       <PaymentLoading
         onPay={handlePaymentConfirm}
         amount={extractedData?.amount?.toString()}
-        merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : undefined}
+        merchantName={
+          extractedData?.address
+            ? `${extractedData.address.slice(0, 6)}...`
+            : undefined
+        }
       />
     );
   }
 
-  // Show payment success screen
   if (showPaymentSuccess) {
     return (
       <PaymentSuccess
         onBackToHome={handleBackToHome}
         userName={displayName}
-        merchantName={extractedData?.address ? `${extractedData.address.slice(0, 6)}...` : 'Merchant'}
+        merchantName={
+          extractedData?.address
+            ? `${extractedData.address.slice(0, 6)}...`
+            : 'Merchant'
+        }
         amount={extractedData?.amount?.toString()}
       />
     );
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-4">
+    <main
+      className="flex items-center justify-center min-h-screen p-4"
+      style={{ backgroundColor: '#EAF4FF' }}
+    >
       <div className="max-w-md mx-auto px-4 py-8 space-y-4">
         <BalanceDisplay />
-        <Card className="w-full">
-        <div className="p-6 space-y-6">
-          {/* Header */}
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              QR Code Scanner
-            </h1>
-            <p className="text-muted-foreground">
-              Upload an image to scan for QR codes and extract address & amount
-            </p>
-          </div>
-
-          {/* Image Upload Section */}
-          <div className="space-y-3">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFileSelect}
-              className="hidden"
-            />
-
-            {selectedImage ? (
-              <div className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-border">
-                <img
-                  src={selectedImage || '/placeholder.svg'}
-                  alt="Selected QR code"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full aspect-square rounded-lg border-2 border-dashed border-border bg-card hover:bg-secondary transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer"
+        <Card className="w-full" style={{ backgroundColor: '#FFFFFF' }}>
+          <div className="p-6 space-y-6">
+            <div className="text-center">
+              <h1
+                className="text-2xl font-bold mb-2"
+                style={{ color: '#1A1A3E' }}
               >
-                <Upload className="w-8 h-8 text-muted-foreground" />
-                <span className="text-sm font-medium text-muted-foreground">
-                  Click to upload image
-                </span>
-              </button>
-            )}
-
-            {selectedImage && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setSelectedImage(null);
-                  setExtractedData(null);
-                  if (fileInputRef.current) fileInputRef.current.value = '';
-                }}
-                className="w-full"
-              >
-                Change Image
-              </Button>
-            )}
-          </div>
-
-          {/* Scan Button */}
-          <Button
-            onClick={handleScanQR}
-            disabled={!selectedImage || loading}
-            size="lg"
-            className="w-full"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Scanning...
-              </>
-            ) : (
-              'Scan QR Code'
-            )}
-          </Button>
-
-          {/* Error State */}
-          {error && (
-            <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex gap-2">
-              <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
-              <p className="text-sm text-destructive">{error}</p>
+                QR Code Scanner
+              </h1>
+              <p className="text-muted-foreground">
+                Upload an image to scan for QR codes and extract address &
+                amount
+              </p>
             </div>
-          )}
 
-          {/* Results Section */}
-          {extractedData && (
-            <div className="space-y-3 pt-3 border-t border-border">
-              <div className="space-y-2">
-                {extractedData.valid ? (
-                  <div className="flex gap-2 items-start p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                    <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                    <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                      Valid QR code detected!
-                    </p>
-                  </div>
-                ) : (
-                  <div className="flex gap-2 items-start p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
-                    <p className="text-sm text-amber-700 dark:text-amber-300">
-                      {extractedData.error || 'Could not extract complete data'}
-                    </p>
+            {/* Image Upload Section */}
+            <div className="space-y-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+              />
+
+              {selectedImage ? (
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-border">
+                  <img
+                    src={selectedImage || '/placeholder.svg'}
+                    alt="Selected QR code"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full aspect-square rounded-lg border-2 border-dashed border-border bg-card hover:bg-secondary transition-colors flex flex-col items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Upload className="w-8 h-8 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Click to upload image
+                  </span>
+                </button>
+              )}
+
+              {selectedImage && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedImage(null);
+                    setExtractedData(null);
+                    if (fileInputRef.current) fileInputRef.current.value = '';
+                  }}
+                  className="w-full"
+                >
+                  Change Image
+                </Button>
+              )}
+            </div>
+
+            <Button
+              onClick={handleScanQR}
+              disabled={!selectedImage || loading}
+              size="lg"
+              className="w-full text-white"
+              style={{ backgroundColor: '#4DA6FF' }}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Scanning...
+                </>
+              ) : (
+                'Scan QR Code'
+              )}
+            </Button>
+
+            {/* Error State */}
+            {error && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex gap-2">
+                <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">{error}</p>
+              </div>
+            )}
+
+            {/* Results Section */}
+            {extractedData && (
+              <div className="space-y-3 pt-3 border-t border-border">
+                <div className="space-y-2">
+                  {extractedData.valid ? (
+                    <div className="flex gap-2 items-start p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                        Valid QR code detected!
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-start p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                      <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                      <p className="text-sm text-amber-700 dark:text-amber-300">
+                        {extractedData.error ||
+                          'Could not extract complete data'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-foreground">
+                    Extracted Data (JSON):
+                  </label>
+                  <pre className="p-3 bg-card border border-border rounded-lg text-xs overflow-auto max-h-40 text-foreground">
+                    {JSON.stringify(
+                      {
+                        address: extractedData.address || null,
+                        amount: extractedData.amount || null,
+                        valid: extractedData.valid,
+                      },
+                      null,
+                      2
+                    )}
+                  </pre>
+                </div>
+
+                {canSendETH && (
+                  <div
+                    className="p-3 rounded-lg space-y-2"
+                    style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}
+                  >
+                    <p className="text-sm font-semibold">Ready to send IDR:</p>
+                    <div className="space-y-1 text-xs opacity-90">
+                      <p>
+                        <span className="font-medium">Merchant:</span>{' '}
+                        {extractedData.address}
+                      </p>
+                      <p>
+                        <span className="font-medium">Amount:</span>{' '}
+                        {extractedData.amount} IDR
+                      </p>
+                    </div>
+                    <Button
+                      className="w-full mt-2 text-foreground"
+                      style={{ backgroundColor: '#FFFFFF' }}
+                      onClick={() => setShowPaymentModal(true)}
+                    >
+                      Pay with IDR
+                    </Button>
                   </div>
                 )}
               </div>
-
-              {/* JSON Output */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">
-                  Extracted Data (JSON):
-                </label>
-                <pre className="p-3 bg-card border border-border rounded-lg text-xs overflow-auto max-h-40 text-foreground">
-                  {JSON.stringify(
-                    {
-                      address: extractedData.address || null,
-                      amount: extractedData.amount || null,
-                      valid: extractedData.valid,
-                    },
-                    null,
-                    2
-                  )}
-                </pre>
-              </div>
-
-              {/* IDR Payment Info */}
-              {canSendETH && (
-                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg space-y-2">
-                  <p className="text-sm font-semibold text-foreground">
-                    Ready to send IDR:
-                  </p>
-                  <div className="space-y-1 text-xs text-muted-foreground">
-                    <p>
-                      <span className="font-medium">Merchant:</span>{' '}
-                      {extractedData.address}
-                    </p>
-                    <p>
-                      <span className="font-medium">Amount:</span>{' '}
-                      {extractedData.amount} IDR
-                    </p>
-                  </div>
-                  <Button
-                    className="w-full mt-2"
-                    onClick={() => setShowPaymentModal(true)}
-                  >
-                    Pay with IDR
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
         </Card>
-        
+
         <PaymentModal
           isOpen={showPaymentModal}
           onClose={() => setShowPaymentModal(false)}
