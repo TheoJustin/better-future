@@ -12,9 +12,9 @@ export default function QRGenerator() {
   const activeAccount = useActiveAccount();
   const isConnected = !!activeAccount;
   const hasRedirected = useRef(false);
-  const [inputValue, setInputValue] = useState(
-    'ethereum:[PUBLIC_KEY]@4202?value=[PRICE]'
-  );
+  const [publicKey, setPublicKey] = useState('');
+  const [price, setPrice] = useState('');
+  const inputValue = `ethereum:${publicKey}@4202?value=${price}`;
   const [qrCode, setQrCode] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -101,19 +101,36 @@ export default function QRGenerator() {
         </div>
 
         {/* Input Card */}
-        <Card className="p-6 border border-border bg-card">
+        <Card
+          className="p-6 border border-border bg-card"
+          style={{ backgroundColor: '#FFFFFF' }}
+        >
           <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">
-                Enter text or URL
-              </label>
-              <Input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="ethereum:[PUBLIC_KEY]@4202?value=[PRICE]"
-                className="w-full"
-              />
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">
+                  Public Key
+                </label>
+                <Input
+                  type="text"
+                  value={publicKey}
+                  onChange={(e) => setPublicKey(e.target.value)}
+                  placeholder="Enter public key"
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">
+                  Price
+                </label>
+                <Input
+                  type="text"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="Enter price"
+                  className="w-full"
+                />
+              </div>
             </div>
 
             {/* QR Code Preview */}
