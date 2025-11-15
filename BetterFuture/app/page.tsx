@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { useActiveAccount } from 'panna-sdk';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { usePlants } from '@/hooks/usePlants';
 import { usePlantStageScheduler } from '@/hooks/usePlantStageScheduler';
 import BetterFutureHeader from '@/components/bf/BetterFutureHeader';
@@ -28,26 +29,35 @@ function HomeContent() {
   const activeTab = searchParams.get('tab') || 'qr-scanner';
   const activeAccount = useActiveAccount();
   const isConnected = !!activeAccount;
+  const isMobile = useIsMobile();
   const hasRedirected = useRef(false);
   
   const { plants } = usePlants();
   const { isRunning } = usePlantStageScheduler();
 
-  // Redirect to login if not connected
+  // Redirect mobile users to login, allow web users to access home directly
   useEffect(() => {
     // Prevent multiple redirects
     if (hasRedirected.current) return;
+    
+    // Wait for mobile detection to complete
+    if (isMobile === undefined) return;
 
-    if (!isConnected) {
+    if (isMobile && !isConnected) {
       hasRedirected.current = true;
       // Use window.location.replace to force redirect and prevent back navigation
       window.location.replace('/login');
     }
-  }, [isConnected]);
+  }, [isConnected, isMobile]);
 
-  // Don't render if not connected
-  if (!isConnected) {
+  // Don't render if mobile and not connected
+  if (isMobile && !isConnected) {
     return null;
+  }
+  
+  // Show loading while detecting mobile
+  if (isMobile === undefined) {
+    return <div>Loading...</div>;
   }
 
   const handleTabChange = (tabId: string) => {
