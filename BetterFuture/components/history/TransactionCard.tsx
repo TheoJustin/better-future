@@ -1,5 +1,7 @@
 'use client'
 
+import { ArrowRight } from "lucide-react"
+
 interface TransactionCardProps {
   amount: string
   from: string
@@ -51,14 +53,8 @@ export function TransactionCard({
         </div>
 
         {/* Icon */}
-        <div className="absolute h-[87px] right-0 top-0 w-[60px] flex items-center justify-center">
-          <div className="relative h-full w-full">
-            <img
-              alt=""
-              className="block max-w-none size-full object-contain"
-              src={imgVector39}
-            />
-          </div>
+        <div className="absolute h-[87px] right-0 top-0 w-[60px] flex items-center justify-center">  
+          <ArrowRight className="text-white" size={24} strokeWidth={2.5} />
         </div>
       </div>
     </div>
