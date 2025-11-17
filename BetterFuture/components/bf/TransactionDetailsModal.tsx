@@ -11,6 +11,7 @@ interface Transaction {
   amount: string;
   timestamp: number;
   buyer: string;
+  category?: string;
 }
 
 interface TransactionDetailsModalProps {
@@ -51,6 +52,13 @@ export default function TransactionDetailsModal({ isOpen, onClose, transaction }
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted-foreground">Amount</span>
               <span className="font-semibold text-lg" style={{ color: '#1A1A3E' }}>{transaction.amount} IDR</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Category</span>
+              <span className="px-2 py-1 text-sm rounded-full" style={{ backgroundColor: '#E3F2FD', color: '#1976D2' }}>
+                {transaction.category || 'General'}
+              </span>
             </div>
 
             <div className="flex justify-between items-center">

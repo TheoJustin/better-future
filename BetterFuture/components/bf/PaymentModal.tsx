@@ -94,6 +94,7 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
         buyer: account.address
       });
 
+      console.log('Payment data:', { merchant, amount: paymentAmount, category, receiptURI }); // Debug log
       const result = await payMerchant(client, account, merchant, amountWei, receiptURI, category);
       setTxHash(result.transactionHash);
       setStep('success');

@@ -14,6 +14,7 @@ interface Transaction {
   amount: string;
   timestamp: number;
   buyer: string;
+  category?: string;
 }
 
 export default function TransactionHistory() {
@@ -38,14 +39,17 @@ export default function TransactionHistory() {
           getReceiptTokenURI(client, BigInt(i)).then((uri) => {
             try {
               const data = JSON.parse(uri);
+              console.log(`Receipt #${i} metadata:`, data); // Debug log
               return {
                 tokenId: i,
                 merchant: data.merchant,
                 amount: data.amount,
                 timestamp: data.timestamp,
                 buyer: data.buyer,
+                category: data.category || 'General',
               };
-            } catch {
+            } catch (error) {
+              console.error(`Failed to parse receipt #${i}:`, error);
               return null;
             }
           })
@@ -154,9 +158,14 @@ export default function TransactionHistory() {
                       <p className="text-sm text-muted-foreground">
                         {formatDate(tx.timestamp)}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Receipt NFT #{tx.tokenId}
-                      </p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-xs text-muted-foreground">
+                          Receipt NFT #{tx.tokenId}
+                        </p>
+                        <span className="px-2 py-1 text-xs rounded-full" style={{ backgroundColor: '#E3F2FD', color: '#1976D2' }}>
+                          {tx.category}
+                        </span>
+                      </div>
                     </div>
                     <div className="text-right">
                       <p

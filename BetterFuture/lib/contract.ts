@@ -389,6 +389,8 @@ export async function payMerchant(
   receiptTokenURI: string,
   category: string = 'General'
 ) {
+  console.log('Using PaymentProcessor contract:', PAYMENT_PROCESSOR_CONTRACT_ADDRESS); // Debug log
+  console.log('Calling payMerchant with category:', category); // Debug log
   const tx = prepareContractCall({
     contract: getContract({
       client,
@@ -435,17 +437,20 @@ export async function getReceiptBalance(client: any, address: string): Promise<b
 }
 
 export async function getReceiptTokenURI(client: any, tokenId: bigint): Promise<string> {
+  console.log('Reading receipt from contract:', RECEIPT_NFT_CONTRACT_ADDRESS); // Debug log
   const contract = getContract({
     client,
     chain: liskSepolia,
     address: RECEIPT_NFT_CONTRACT_ADDRESS!,
   })
 
-  return await readContract({
+  const uri = await readContract({
     contract,
     method: 'function tokenURI(uint256 tokenId) view returns (string)',
     params: [tokenId],
   })
+  console.log(`Receipt #${tokenId} raw URI:`, uri); // Debug log
+  return uri
 }
 
 // Helper function to calculate platform fee
