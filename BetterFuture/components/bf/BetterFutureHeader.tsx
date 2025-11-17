@@ -42,7 +42,7 @@ export default function BetterFutureHeader({
               BetterFuture
             </h1>
             <p className="text-xs" style={{ color: '#FFFFFF', opacity: 0.9 }}>
-              Decentralized Impact Platform
+              Decentralized Transaction Platform
             </p>
           </div>
         </div>

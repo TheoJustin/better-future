@@ -386,7 +386,8 @@ export async function payMerchant(
   account: any,
   merchant: string,
   amount: bigint,
-  receiptTokenURI: string
+  receiptTokenURI: string,
+  category: string = 'General'
 ) {
   const tx = prepareContractCall({
     contract: getContract({
@@ -394,8 +395,8 @@ export async function payMerchant(
       chain: liskSepolia,
       address: PAYMENT_PROCESSOR_CONTRACT_ADDRESS!,
     }),
-    method: 'function payMerchant(address merchant, uint256 amount, string receiptTokenURI)',
-    params: [merchant, amount, receiptTokenURI],
+    method: 'function payMerchant(address merchant, uint256 amount, string receiptTokenURI, string category)',
+    params: [merchant, amount, receiptTokenURI, category],
   })
 
   const result = await sendTransaction({ account, transaction: tx })

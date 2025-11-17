@@ -45,7 +45,7 @@ export const LISK_GARDEN_ABI = [{"inputs":[],"stateMutability":"nonpayable","typ
 export const IDR_STABLE_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_IDR_STABLE_CONTRACT_ADDRESS || '0xa8Fdb246849304965440C82304aC6d8df578C2D4';
 export const PAYMENT_PROCESSOR_CONTRACT_ADDRESS =
-  process.env.NEXT_PUBLIC_PAYMENT_PROCESSOR_CONTRACT_ADDRESS || '0xAC54F69119bffbC101cCA6adFB1Ef65CFa73cca1';
+  process.env.NEXT_PUBLIC_PAYMENT_PROCESSOR_CONTRACT_ADDRESS || '0x421e010dC23005E7DD536CB42Fb6378b27C788ec';
 export const RECEIPT_NFT_CONTRACT_ADDRESS =
   process.env.NEXT_PUBLIC_RECEIPT_NFT_CONTRACT_ADDRESS || '0x092C45Be1a964bAe01fb33Fd12072BfB335e5E93';
 
@@ -478,6 +478,12 @@ export const PAYMENT_PROCESSOR_ABI = [
       },
       {
         indexed: false,
+        internalType: 'string',
+        name: 'category',
+        type: 'string',
+      },
+      {
+        indexed: false,
         internalType: 'uint256',
         name: 'timestamp',
         type: 'uint256',
@@ -498,6 +504,7 @@ export const PAYMENT_PROCESSOR_ABI = [
       { internalType: 'address', name: 'merchant', type: 'address' },
       { internalType: 'uint256', name: 'amount', type: 'uint256' },
       { internalType: 'string', name: 'receiptTokenURI', type: 'string' },
+      { internalType: 'string', name: 'category', type: 'string' },
     ],
     name: 'payMerchant',
     outputs: [],

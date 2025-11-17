@@ -267,8 +267,8 @@ export default function QRCodeScanner() {
                 <div className="space-y-2">
                   {extractedData.valid ? (
                     <div className="flex gap-2 items-start p-2 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
-                      <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 dark:text-green-900 shrink-0 mt-0.5" />
+                      <p className="text-sm font-medium text-green-700 dark:text-green-900">
                         Valid QR code detected!
                       </p>
                     </div>
@@ -305,15 +305,21 @@ export default function QRCodeScanner() {
                     className="p-3 rounded-lg space-y-2"
                     style={{ backgroundColor: '#4DA6FF', color: '#FFFFFF' }}
                   >
-                    <p className="text-sm font-semibold">Ready to send IDR:</p>
-                    <div className="space-y-1 text-xs opacity-90">
+                    <p className="text-sm font-semibold text-black">
+                      Ready to send IDR:
+                    </p>
+                    <div className="space-y-1 text-xs text-black opacity-90">
                       <p>
-                        <span className="font-medium">Merchant:</span>{' '}
-                        {extractedData.address}
+                        <span className="font-medium text-black text-wrap">
+                          Merchant:
+                          {extractedData.address}
+                        </span>
                       </p>
                       <p>
-                        <span className="font-medium">Amount:</span>{' '}
-                        {extractedData.amount} IDR
+                        <span className="font-medium text-black">
+                          Amount:
+                          {extractedData.amount} IDR
+                        </span>{' '}
                       </p>
                     </div>
                     <Button

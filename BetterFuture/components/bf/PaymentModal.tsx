@@ -30,6 +30,7 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
   const { client, account } = useContract();
   const [merchant, setMerchant] = useState(merchantAddress || '');
   const [paymentAmount, setPaymentAmount] = useState(amount || '');
+  const [category, setCategory] = useState('General');
 
   // Update fields when props change
   useEffect(() => {
@@ -46,8 +47,8 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'input' | 'confirm' | 'processing' | 'success' | 'error'>('input');
   const [error, setError] = useState<string | null>(null);
-  const [balance, setBalance] = useState<bigint>(0n);
-  const [platformFeeBps, setPlatformFeeBps] = useState<bigint>(0n);
+  const [balance, setBalance] = useState<bigint>(BigInt(0));
+  const [platformFeeBps, setPlatformFeeBps] = useState<bigint>(BigInt(0));
   const [txHash, setTxHash] = useState<string>('');
 
   const loadData = async () => {
@@ -88,11 +89,12 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
       const receiptURI = JSON.stringify({
         merchant,
         amount: paymentAmount,
+        category,
         timestamp: Date.now(),
         buyer: account.address
       });
 
-      const result = await payMerchant(client, account, merchant, amountWei, receiptURI);
+      const result = await payMerchant(client, account, merchant, amountWei, receiptURI, category);
       setTxHash(result.transactionHash);
       setStep('success');
     } catch (err: any) {
@@ -107,16 +109,20 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
     setStep('input');
     setError(null);
     setTxHash('');
+    setCategory('General');
     onClose();
   };
 
-  const amountWei = paymentAmount ? parseUnits(paymentAmount, 18) : 0n;
+  const amountWei = paymentAmount ? parseUnits(paymentAmount, 18) : BigInt(0);
   const platformFee = calculatePlatformFee(amountWei, platformFeeBps);
   const merchantAmount = calculateMerchantAmount(amountWei, platformFeeBps);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        style={{ backgroundColor: '#FFFFFF' }}
+      >
         <DialogHeader>
           <DialogTitle>IDR Payment</DialogTitle>
         </DialogHeader>
@@ -144,24 +150,51 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
               />
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <select
+                id="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="General">General</option>
+                <option value="Food & Beverage">Food & Beverage</option>
+                <option value="Transportation">Transportation</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Entertainment">Entertainment</option>
+                <option value="Healthcare">Healthcare</option>
+                <option value="Education">Education</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
             {client && account && (
               <div className="text-sm text-muted-foreground">
                 Balance: {formatUnits(balance, 18)} IDR
-                {balance === 0n && <span className="text-amber-600"> (Click + to deposit)</span>}
+                {balance === BigInt(0) && (
+                  <span className="text-amber-600"> (Click + to deposit)</span>
+                )}
               </div>
             )}
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={handleClose} className="flex-1">
+              <Button
+                variant="outline"
+                onClick={handleClose}
+                className="flex-1"
+              >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   loadData();
                   setStep('confirm');
-                }} 
+                }}
                 disabled={!merchant || !paymentAmount || !client || !account}
                 className="flex-1"
+                variant="outline"
               >
                 Continue
               </Button>
@@ -177,6 +210,10 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
                 <span>{paymentAmount} IDR</span>
               </div>
               <div className="flex justify-between">
+                <span>Category:</span>
+                <span>{category}</span>
+              </div>
+              <div className="flex justify-between">
                 <span>Platform Fee:</span>
                 <span>{formatUnits(platformFee, 18)} IDR</span>
               </div>
@@ -187,11 +224,24 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
             </Card>
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep('input')} className="flex-1">
+              <Button
+                variant="outline"
+                onClick={() => setStep('input')}
+                className="flex-1"
+              >
                 Back
               </Button>
-              <Button onClick={handleConfirm} disabled={loading} className="flex-1">
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Pay Now'}
+              <Button
+                onClick={handleConfirm}
+                disabled={loading}
+                variant="outline"
+                className="flex-1"
+              >
+                {loading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  'Pay Now'
+                )}
               </Button>
             </div>
           </div>
@@ -224,7 +274,11 @@ export default function PaymentModal({ isOpen, onClose, merchantAddress = '', am
             <AlertCircle className="w-8 h-8 text-red-500 mx-auto" />
             <p className="text-red-500">{error}</p>
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setStep('input')} className="flex-1">
+              <Button
+                variant="outline"
+                onClick={() => setStep('input')}
+                className="flex-1"
+              >
                 Back
               </Button>
               <Button onClick={handleConfirm} className="flex-1">

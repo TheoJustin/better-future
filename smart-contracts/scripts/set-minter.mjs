@@ -1,12 +1,12 @@
-const hre = require("hardhat");
+import { ethers } from "hardhat";
 
 async function main() {
-  const [owner] = await hre.ethers.getSigners();
+  const [owner] = await ethers.getSigners();
   
-  const receiptNFTAddress = "0x251C1faFEE681748c929e41B888f368a023FfdD9";
+  const receiptNFTAddress = "0x092C45Be1a964bAe01fb33Fd12072BfB335e5E93";
   const newPaymentProcessorAddress = "0x421e010dC23005E7DD536CB42Fb6378b27C788ec";
   
-  const ReceiptNFT = await hre.ethers.getContractAt("ReceiptNFT", receiptNFTAddress);
+  const ReceiptNFT = await ethers.getContractAt("ReceiptNFT", receiptNFTAddress);
   
   console.log(`Setting ${newPaymentProcessorAddress} as minter...`);
   
