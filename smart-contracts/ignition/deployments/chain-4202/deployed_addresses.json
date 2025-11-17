@@ -5,5 +5,6 @@
   "IDRTokenV2Module#IDRToken": "0xa8Fdb246849304965440C82304aC6d8df578C2D4",
   "PaymentProcessorV2Module#PaymentProcessor": "0x5dB8c24CcDccEB6eDAA0C32B2832a3C164FB313a",
   "ReceiptNFTV2Module#ReceiptNFTV2": "0x092C45Be1a964bAe01fb33Fd12072BfB335e5E93",
-  "PaymentProcessorV3Module#PaymentProcessor": "0xAC54F69119bffbC101cCA6adFB1Ef65CFa73cca1"
+  "PaymentProcessorV3Module#PaymentProcessor": "0xAC54F69119bffbC101cCA6adFB1Ef65CFa73cca1",
+  "PaymentProcessorV4Module#PaymentProcessor": "0x421e010dC23005E7DD536CB42Fb6378b27C788ec"
 }
