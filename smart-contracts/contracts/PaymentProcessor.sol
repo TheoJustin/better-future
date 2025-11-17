@@ -19,7 +19,7 @@ contract PaymentProcessor is Ownable {
     uint256 public platformFeeBps; // basis points (1% = 100)
 
 
-    event PaymentMade(address indexed buyer, address indexed merchant, uint256 amount, uint256 platformFee, uint256 tokenId, uint256 timestamp);
+    event PaymentMade(address indexed buyer, address indexed merchant, uint256 amount, uint256 platformFee, uint256 tokenId, string category, uint256 timestamp);
 
 
     constructor(address _stableToken, address _receiptContract, address _platformWallet, uint256 _platformFeeBps) Ownable(msg.sender) {
@@ -42,7 +42,7 @@ contract PaymentProcessor is Ownable {
 
 
     /// @notice Buyer must have `approve`d this contract to spend `amount` of stableToken beforehand
-    function payMerchant(address merchant, uint256 amount, string calldata receiptTokenURI) external {
+    function payMerchant(address merchant, uint256 amount, string calldata receiptTokenURI, string calldata category) external {
         require(merchant != address(0), "invalid merchant");
         require(amount > 0, "amount zero");
 
@@ -67,6 +67,6 @@ contract PaymentProcessor is Ownable {
         uint256 tokenId = receiptContract.mintReceipt(msg.sender, receiptTokenURI);
 
 
-        emit PaymentMade(msg.sender, merchant, amount, platformFee, tokenId, block.timestamp);
+        emit PaymentMade(msg.sender, merchant, amount, platformFee, tokenId, category, block.timestamp);
     }
 }
